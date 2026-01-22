@@ -102,12 +102,12 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
 
                 <div className="bg-card rounded-lg shadow-lg border overflow-hidden mx-4">
                     {survey.theme?.bannerUrl && (
-                        <div className="h-48 w-full overflow-hidden bg-muted">
+                        <div className="w-full bg-muted/30">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img
                                 src={survey.theme.bannerUrl}
                                 alt="Banner de encuesta"
-                                className="w-full h-full object-cover"
+                                className="w-full h-auto max-h-[400px] object-contain mx-auto"
                             />
                         </div>
                     )}
