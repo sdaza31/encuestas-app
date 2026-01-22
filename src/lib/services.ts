@@ -39,7 +39,7 @@ export const createSurvey = async (survey: Survey) => {
 };
 
 
-};
+
 
 export const deleteSurvey = async (id: string) => {
     try {
