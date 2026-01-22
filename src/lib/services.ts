@@ -5,6 +5,7 @@ import {
     doc,
     getDoc,
     getDocs,
+    deleteDoc,
     query,
     orderBy,
     Timestamp
@@ -38,6 +39,16 @@ export const createSurvey = async (survey: Survey) => {
 };
 
 
+};
+
+export const deleteSurvey = async (id: string) => {
+    try {
+        await deleteDoc(doc(db, COLLECTION_SURVEYS, id));
+    } catch (e) {
+        console.error("Error deleting survey: ", e);
+        throw e;
+    }
+};
 
 export const getAllSurveys = async (): Promise<Survey[]> => {
     try {

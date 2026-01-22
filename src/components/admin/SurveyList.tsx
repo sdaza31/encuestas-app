@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react"
 import { Survey } from "@/types"
-import { getAllSurveys } from "@/lib/services"
+import { getAllSurveys, deleteSurvey } from "@/lib/services"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { ExternalLink, Edit } from "lucide-react"
+import { ExternalLink, Trash2 } from "lucide-react"
 
 interface SurveyListProps {
     onSelect: (survey: Survey) => void
@@ -16,6 +16,19 @@ interface SurveyListProps {
 export function SurveyList({ onSelect, currentSurveyId, lastUpdated }: SurveyListProps) {
     const [surveys, setSurveys] = useState<Survey[]>([])
     const [loading, setLoading] = useState(true)
+
+    const handleDelete = async (e: React.MouseEvent, id: string) => {
+        e.stopPropagation();
+        if (confirm("¿Estás seguro de que quieres eliminar esta encuesta? Esta acción no se puede deshacer.")) {
+            try {
+                await deleteSurvey(id);
+                fetchSurveys(); // Refresh list
+            } catch (error) {
+                console.error("Error deleting survey:", error);
+                alert("Error al eliminar la encuesta.");
+            }
+        }
+    }
 
     const fetchSurveys = async () => {
         setLoading(true)

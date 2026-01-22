@@ -13,6 +13,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 function ResultsContent() {
     const searchParams = useSearchParams()
@@ -42,12 +43,62 @@ function ResultsContent() {
         fetchData()
     }, [id])
 
+    const downloadCSV = () => {
+        if (!survey || responses.length === 0) return;
+
+        // Headers
+        const headers = ['Fecha', ...survey.questions.map(q => q.title)];
+        const csvRows = [headers.join(',')];
+
+        // Rows
+        for (const r of responses) {
+            const row = [
+                r.submittedAt?.toDate ? `"${r.submittedAt.toDate().toLocaleString()}"` : '"N/A"',
+                ...survey.questions.map(q => {
+                    const answer = r.answers?.[q.id];
+                    let displayValue = answer;
+
+                    if (Array.isArray(answer)) {
+                        displayValue = answer.join("; "); // Usar punto y coma para separar valores en array dentro de CSV
+                    } else if (typeof answer === 'boolean') {
+                        displayValue = answer ? 'Sí' : 'No';
+                    } else if (q.type === 'radio' || q.type === 'select') {
+                        const option = q.options?.find(opt => opt.value === answer);
+                        if (option) displayValue = option.label;
+                    }
+
+                    // Escapar comillas dobles y envolver en comillas
+                    const stringValue = displayValue?.toString() || '';
+                    const escaped = stringValue.replace(/"/g, '""');
+                    return `"${escaped}"`;
+                })
+            ];
+            csvRows.push(row.join(','));
+        }
+
+        const csvData = csvRows.join('\n');
+        const blob = new Blob([csvData], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.setAttribute('hidden', '');
+        a.setAttribute('href', url);
+        a.setAttribute('download', `resultados_${survey.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.csv`);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+
     if (loading) return <div className="p-8 text-center">Cargando resultados...</div>
     if (!survey) return <div className="p-8 text-center">Encuesta no encontrada</div>
 
     return (
         <div className="container mx-auto py-8 space-y-8">
-            <h1 className="text-3xl font-bold">Resultados: {survey.title}</h1>
+            <div className="flex justify-between items-center">
+                <h1 className="text-3xl font-bold">Resultados: {survey.title}</h1>
+                <Button onClick={downloadCSV} disabled={responses.length === 0}>
+                    Exportar CSV
+                </Button>
+            </div>
 
             <div className="grid gap-4">
                 <Card>
