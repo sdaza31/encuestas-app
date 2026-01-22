@@ -1,0 +1,19 @@
+
+> encuestas-app@0.1.0 lint
+> eslint
+
+
+C:\Users\sddc3\.gemini\antigravity\scratch\encuestas-app\src\components\builder\QuestionEditor.tsx
+  7:52  warning  'CardFooter' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\sddc3\.gemini\antigravity\scratch\encuestas-app\src\components\builder\SurveyBuilder.tsx
+  67:33  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\sddc3\.gemini\antigravity\scratch\encuestas-app\src\components\ui\input.tsx
+  4:18  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+C:\Users\sddc3\.gemini\antigravity\scratch\encuestas-app\src\components\ui\select.tsx
+  5:18  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+✖ 4 problems (2 errors, 2 warnings)
+
