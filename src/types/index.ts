@@ -18,6 +18,13 @@ export interface Question {
     };
 }
 
+export interface TextStyle {
+    textAlign?: 'left' | 'center' | 'right';
+    isBold?: boolean;
+    color?: string;
+    fontSize?: 'sm' | 'base' | 'lg' | 'xl' | '2xl';
+}
+
 export interface Survey {
     id: string;
     title: string;
@@ -25,6 +32,10 @@ export interface Survey {
     theme?: {
         backgroundColor: string;
         bannerUrl?: string;
+        titleStyle?: TextStyle;
+        descriptionStyle?: TextStyle;
+        questionTitleStyle?: TextStyle;
+        answerStyle?: TextStyle;
     };
     thankYouMessage?: string;
     questions: Question[];

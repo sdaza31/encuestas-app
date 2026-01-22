@@ -3,6 +3,7 @@
 import * as React from "react"
 import { Survey, Question } from "@/types"
 import { QuestionEditor } from "./QuestionEditor"
+import { StyleEditor } from "./StyleEditor"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -255,6 +256,32 @@ export function SurveyBuilder() {
                                         })}
                                     />
                                 </div>
+                            </div>
+                        </div>
+
+                        <div className="border-t pt-4 mt-2">
+                            <Label className="block mb-4 text-sm font-semibold text-muted-foreground uppercase tracking-wide">Tipografía y Estilos</Label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                <StyleEditor
+                                    label="Título Encuesta"
+                                    value={survey.theme?.titleStyle}
+                                    onChange={(s) => setSurvey(prev => ({ ...prev, theme: { ...prev.theme, titleStyle: s, backgroundColor: prev.theme?.backgroundColor || "#ffffff" } }))}
+                                />
+                                <StyleEditor
+                                    label="Descripción"
+                                    value={survey.theme?.descriptionStyle}
+                                    onChange={(s) => setSurvey(prev => ({ ...prev, theme: { ...prev.theme, descriptionStyle: s, backgroundColor: prev.theme?.backgroundColor || "#ffffff" } }))}
+                                />
+                                <StyleEditor
+                                    label="Títulos Preguntas"
+                                    value={survey.theme?.questionTitleStyle}
+                                    onChange={(s) => setSurvey(prev => ({ ...prev, theme: { ...prev.theme, questionTitleStyle: s, backgroundColor: prev.theme?.backgroundColor || "#ffffff" } }))}
+                                />
+                                <StyleEditor
+                                    label="Respuestas"
+                                    value={survey.theme?.answerStyle}
+                                    onChange={(s) => setSurvey(prev => ({ ...prev, theme: { ...prev.theme, answerStyle: s, backgroundColor: prev.theme?.backgroundColor || "#ffffff" } }))}
+                                />
                             </div>
                         </div>
                     </div>
