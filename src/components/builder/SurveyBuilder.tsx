@@ -23,6 +23,7 @@ export function SurveyBuilder() {
 
     const [isPreview, setIsPreview] = React.useState(false)
     const [isSaving, setIsSaving] = React.useState(false)
+    const [isUploading, setIsUploading] = React.useState(false) // Estado separado para subida de imagen
     const [shareUrl, setShareUrl] = React.useState<string | null>(null)
     const [isUpdate, setIsUpdate] = React.useState(false) // Track if we are updating an existing remote survey
 
@@ -312,7 +313,7 @@ export function SurveyBuilder() {
                                                     }
 
                                                     try {
-                                                        setIsSaving(true); // Reuse saving state for loading UI
+                                                        setIsUploading(true);
                                                         const url = await uploadImage(file);
                                                         setSurvey(prev => ({
                                                             ...prev,
@@ -322,21 +323,26 @@ export function SurveyBuilder() {
                                                                 bannerUrl: url
                                                             }
                                                         }));
-                                                    } catch (error) {
+                                                    } catch (error: any) {
                                                         console.error(error);
-                                                        alert("Error al subir la imagen");
+                                                        if (error?.code === 'storage/unauthorized') {
+                                                            alert("⛔ Error de Permisos: No tienes permiso para subir archivos.\n\nVe a Firebase Console -> Storage -> Rules y configura:\nallow read, write: if true;");
+                                                        } else {
+                                                            alert("Error al subir la imagen: " + (error.message || error));
+                                                        }
                                                     } finally {
-                                                        setIsSaving(false);
+                                                        setIsUploading(false);
+                                                        e.target.value = '';
                                                     }
                                                 }}
                                             />
                                             <Button
                                                 variant="secondary"
                                                 onClick={() => document.getElementById('banner-upload')?.click()}
-                                                disabled={isSaving}
+                                                disabled={isUploading || isSaving}
                                                 type="button"
                                             >
-                                                {isSaving ? "Subiendo..." : "Subir Imagen"}
+                                                {isUploading ? "Subiendo..." : "Subir Imagen"}
                                             </Button>
                                         </div>
                                     </div>
