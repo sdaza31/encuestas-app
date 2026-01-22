@@ -26,5 +26,6 @@ export interface Survey {
         backgroundColor: string;
         bannerUrl?: string;
     };
+    thankYouMessage?: string;
     questions: Question[];
 }

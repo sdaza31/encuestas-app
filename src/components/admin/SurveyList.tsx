@@ -48,22 +48,39 @@ export function SurveyList({ onSelect, currentSurveyId, lastUpdated }: SurveyLis
                     <div
                         key={survey.id}
                         className={`p-3 rounded-lg border cursor-pointer transition-colors ${currentSurveyId === survey.id
-                                ? "bg-accent border-primary"
-                                : "hover:bg-muted"
+                            ? "bg-accent border-primary"
+                            : "hover:bg-muted"
                             }`}
                         onClick={() => onSelect(survey)}
                     >
                         <h3 className="font-semibold truncate">{survey.title}</h3>
                         <p className="text-xs text-muted-foreground truncate">{survey.description || "Sin descripción"}</p>
 
-                        <div className="flex justify-end mt-2">
+                        <div className="flex justify-end mt-2 gap-2">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 px-2 text-xs"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    const encodedId = encodeURIComponent(survey.id);
+                                    window.open(`${window.location.origin}/encuestas-app/admin/results?id=${encodedId}`, '_blank');
+                                }}
+                                title="Ver Resultados"
+                            >
+                                Resultados
+                            </Button>
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 className="h-6 w-6 p-0"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    const url = `${window.location.origin}/encuestas-app/survey?id=${survey.id}`;
+                                    // Make sure we handle both local and prod URLs correctly if possible, 
+                                    // but simply using pathname logic is safer as in builder.
+                                    // But let's stick to what worked or improve it.
+                                    const basePath = window.location.pathname.includes('/encuestas-app') ? '/encuestas-app' : '';
+                                    const url = `${window.location.origin}${basePath}/survey?id=${survey.id}`;
                                     window.open(url, '_blank');
                                 }}
                                 title="Abrir encuesta"

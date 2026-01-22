@@ -184,6 +184,15 @@ export function SurveyBuilder() {
                                     placeholder="Descripción breve de la encuesta..."
                                 />
                             </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="thank-you-msg">Mensaje de Agradecimiento</Label>
+                                <Input
+                                    id="thank-you-msg"
+                                    value={survey.thankYouMessage || ""}
+                                    onChange={(e) => setSurvey({ ...survey, thankYouMessage: e.target.value })}
+                                    placeholder="¡Gracias! Tus respuestas han sido enviadas. (Opcional)"
+                                />
+                            </div>
                         </div>
 
                         <div className="border-t pt-4 mt-2">
