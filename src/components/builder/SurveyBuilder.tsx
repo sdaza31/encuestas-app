@@ -4,6 +4,7 @@ import * as React from "react"
 import { Survey, Question } from "@/types"
 import { QuestionEditor } from "./QuestionEditor"
 import { StyleEditor } from "./StyleEditor"
+import { ThemeManager } from "./ThemeManager"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -23,11 +24,9 @@ export function SurveyBuilder() {
 
     const [isPreview, setIsPreview] = React.useState(false)
     const [isSaving, setIsSaving] = React.useState(false)
-    const [isUploading, setIsUploading] = React.useState(false) // Estado separado para subida de imagen
+    const [isUploading, setIsUploading] = React.useState(false)
     const [shareUrl, setShareUrl] = React.useState<string | null>(null)
-    const [isUpdate, setIsUpdate] = React.useState(false) // Track if we are updating an existing remote survey
-
-
+    const [isUpdate, setIsUpdate] = React.useState(false)
 
     const addQuestion = () => {
         const newQuestion: Question = {
@@ -57,11 +56,8 @@ export function SurveyBuilder() {
         }))
     }
 
-
-
     const [lastSave, setLastSave] = React.useState(0)
 
-    // Helper para obtener URL
     const getShareUrl = (id: string) => {
         const basePath = window.location.pathname.includes('/encuestas-app') ? '/encuestas-app' : '';
         return `${window.location.origin}${basePath}/survey?id=${id}`;
@@ -70,8 +66,6 @@ export function SurveyBuilder() {
     const handleShare = () => {
         if (!survey.id) return;
         const url = getShareUrl(survey.id);
-        // Si el ID es largo (UUID), probablemente no funcionará si no se ha guardado,
-        // pero le damos el link igual.
         setShareUrl(url);
         navigator.clipboard.writeText(url).then(() => alert("Link copiado al portapapeles!"));
     }
@@ -80,23 +74,17 @@ export function SurveyBuilder() {
         setIsSaving(true);
         try {
             let id = survey.id;
-
-            // Si ya hemos guardado remotamente (isUpdate is true) o detectamos que el ID no es uno generado localmente (simple heuristic?),
-            // usaremos update. 
-            // La mejor forma es confiar en flag isUpdate que seteamos al crear o al cargar.
-
             if (isUpdate) {
                 await updateSurvey(survey);
-                // id se mantiene
             } else {
                 id = await createSurvey(survey);
                 setSurvey(prev => ({ ...prev, id: id }));
-                setIsUpdate(true); // From now on, it's an update
+                setIsUpdate(true);
             }
 
             const url = getShareUrl(id);
             setShareUrl(url);
-            setLastSave(Date.now()); // Trigger list refresh
+            setLastSave(Date.now());
         } catch (error: any) {
             console.error("Error saving survey:", error);
             const msg = error?.message || "Error desconocido";
@@ -111,12 +99,11 @@ export function SurveyBuilder() {
         }
     };
 
-    // Función para manejar la selección de una encuesta de la lista
     const handleSelectSurvey = (selectedSurvey: Survey) => {
         if (confirm("Si cambias de encuesta sin guardar, perderás los cambios actuales. ¿Continuar?")) {
             setSurvey(selectedSurvey);
             setShareUrl(null);
-            setIsUpdate(true); // Al seleccionar una existente, estamos en modo update
+            setIsUpdate(true);
         }
     };
 
@@ -129,7 +116,7 @@ export function SurveyBuilder() {
                 questions: []
             });
             setShareUrl(null);
-            setIsUpdate(false); // Nueva encuesta = create mode
+            setIsUpdate(false);
         }
     }
 
@@ -178,8 +165,6 @@ export function SurveyBuilder() {
             }
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 px-4 items-start">
-
-                {/* Columna Izquierda: Lista de Encuestas */}
                 <div className="hidden md:block col-span-1 bg-card rounded-xl border shadow-sm p-4 sticky top-4">
                     <h2 className="font-semibold mb-4 text-lg">Mis Encuestas</h2>
                     <SurveyList
@@ -189,7 +174,6 @@ export function SurveyBuilder() {
                     />
                 </div>
 
-                {/* Columna Derecha: Editor */}
                 <div className="col-span-1 md:col-span-3 space-y-8">
                     <div className="grid gap-6 p-6 bg-card rounded-xl border shadow-sm">
                         <div className="grid gap-4">
@@ -242,6 +226,11 @@ export function SurveyBuilder() {
                                 </div>
                             </div>
                         </div>
+
+                        <ThemeManager
+                            currentTheme={survey.theme}
+                            onApplyTheme={(theme) => setSurvey(prev => ({ ...prev, theme }))}
+                        />
 
                         <div className="border-t pt-4 mt-2">
                             <h3 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Personalización Visual</h3>
@@ -335,13 +324,10 @@ export function SurveyBuilder() {
                                                     onChange={async (e) => {
                                                         const file = e.target.files?.[0];
                                                         if (!file) return;
-
-                                                        // Basic validation
-                                                        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                                                        if (file.size > 5 * 1024 * 1024) {
                                                             alert("El archivo es demasiado grande (max 5MB)");
                                                             return;
                                                         }
-
                                                         try {
                                                             setIsUploading(true);
                                                             const url = await uploadImage(file);
@@ -356,7 +342,7 @@ export function SurveyBuilder() {
                                                         } catch (error: any) {
                                                             console.error(error);
                                                             if (error?.code === 'storage/unauthorized') {
-                                                                alert("⛔ Error de Permisos: No tienes permiso para subir archivos.\n\nVe a Firebase Console -> Storage -> Rules y configura:\nallow read, write: if true;");
+                                                                alert("⛔ Error de Permisos: No tienes permiso para subir archivos.");
                                                             } else {
                                                                 alert("Error al subir la imagen: " + (error.message || error));
                                                             }

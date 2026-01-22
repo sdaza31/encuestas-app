@@ -130,6 +130,9 @@ export const getSurveyResponses = async (surveyId: string) => {
 
 import { storage } from "./firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ThemeConfig, SavedTheme } from "@/types";
+
+const COLLECTION_THEMES = "themes";
 
 export const uploadImage = async (file: File): Promise<string> => {
     try {
@@ -139,6 +142,42 @@ export const uploadImage = async (file: File): Promise<string> => {
         return downloadURL;
     } catch (e) {
         console.error("Error uploading image: ", e);
+        throw e;
+    }
+};
+
+// Theme Management
+
+export const createTheme = async (name: string, config: ThemeConfig) => {
+    try {
+        const docRef = await addDoc(collection(db, COLLECTION_THEMES), {
+            name,
+            config,
+            createdAt: Timestamp.now()
+        });
+        return docRef.id;
+    } catch (e) {
+        console.error("Error creating theme: ", e);
+        throw e;
+    }
+};
+
+export const getThemes = async (): Promise<SavedTheme[]> => {
+    try {
+        const q = query(collection(db, COLLECTION_THEMES), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as SavedTheme));
+    } catch (e) {
+        console.error("Error getting themes: ", e);
+        return [];
+    }
+};
+
+export const deleteTheme = async (id: string) => {
+    try {
+        await deleteDoc(doc(db, COLLECTION_THEMES, id));
+    } catch (e) {
+        console.error("Error deleting theme: ", e);
         throw e;
     }
 };

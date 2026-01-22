@@ -30,16 +30,25 @@ export interface Survey {
     id: string;
     title: string;
     description: string;
-    theme?: {
-        backgroundColor: string;
-        bannerUrl?: string;
-        titleStyle?: TextStyle;
-        descriptionStyle?: TextStyle;
-        questionTitleStyle?: TextStyle;
-        answerStyle?: TextStyle;
-        activeColor?: string; // Color para elementos interactivos como estrellas y escalas
-    };
+    theme?: ThemeConfig;
     limitOneResponse?: boolean;
     thankYouMessage?: string;
     questions: Question[];
+}
+
+export interface ThemeConfig {
+    backgroundColor: string;
+    bannerUrl?: string;
+    titleStyle?: TextStyle;
+    descriptionStyle?: TextStyle;
+    questionTitleStyle?: TextStyle;
+    answerStyle?: TextStyle;
+    activeColor?: string;
+}
+
+export interface SavedTheme {
+    id: string;
+    name: string;
+    config: ThemeConfig;
+    createdAt?: any; // Firestore Timestamp
 }
