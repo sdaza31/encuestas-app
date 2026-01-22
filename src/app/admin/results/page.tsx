@@ -47,22 +47,22 @@ function ResultsContent() {
         if (!survey || responses.length === 0) return;
 
         // Headers
-        const headers = ['Fecha de Envío', ...survey.questions.map(q => q.title)];
+        const headers = ['Fecha de Envio', ...survey.questions.map(q => q.title)];
         const csvRows = [headers.join(',')];
 
         // Rows
         for (const r of responses) {
             const row = [
-                // Formato de fecha y hora local completo
-                r.submittedAt?.toDate ? `"${r.submittedAt.toDate().toLocaleString()}"` : '"N/A"',
+                // Formato de fecha y hora local completo sin comas
+                r.submittedAt?.toDate ? `"${r.submittedAt.toDate().toLocaleString().replace(/,/g, ' -')}"` : '"N/A"',
                 ...survey.questions.map(q => {
                     const answer = r.answers?.[q.id];
                     let displayValue = answer;
 
                     if (Array.isArray(answer)) {
-                        displayValue = answer.join("; ");
+                        displayValue = answer.join(" - "); // Guiones en lugar de comas
                     } else if (typeof answer === 'boolean') {
-                        displayValue = answer ? 'Sí' : 'No';
+                        displayValue = answer ? 'Si' : 'No';
                     } else if (q.type === 'radio' || q.type === 'select') {
                         const option = q.options?.find(opt => opt.value === answer);
                         if (option) displayValue = option.label;
@@ -124,16 +124,16 @@ function ResultsContent() {
                                         {responses.map((r) => (
                                             <TableRow key={r.id}>
                                                 <TableCell className="whitespace-nowrap">
-                                                    {r.submittedAt?.toDate ? r.submittedAt.toDate().toLocaleString() : 'N/A'}
+                                                    {r.submittedAt?.toDate ? r.submittedAt.toDate().toLocaleString().replace(/,/g, ' -') : 'N/A'}
                                                 </TableCell>
                                                 {survey.questions.map(q => {
                                                     const answer = r.answers?.[q.id];
                                                     let displayValue = answer;
 
                                                     if (Array.isArray(answer)) {
-                                                        displayValue = answer.join(", ");
+                                                        displayValue = answer.join(" - ");
                                                     } else if (typeof answer === 'boolean') {
-                                                        displayValue = answer ? 'Sí' : 'No';
+                                                        displayValue = answer ? 'Si' : 'No';
                                                     } else if (q.type === 'radio' || q.type === 'select') {
                                                         // Intenta buscar el label de la opción si existe
                                                         const option = q.options?.find(opt => opt.value === answer);
@@ -155,14 +155,13 @@ function ResultsContent() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
-    )
+            )
 }
 
-export default function ResultsPage() {
+            export default function ResultsPage() {
     return (
-        <Suspense fallback={<div>Cargando...</div>}>
-            <ResultsContent />
-        </Suspense>
-    )
+            <Suspense fallback={<div>Cargando...</div>}>
+                <ResultsContent />
+            </Suspense>
+            )
 }
