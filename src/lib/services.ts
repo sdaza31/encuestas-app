@@ -5,6 +5,8 @@ import {
     doc,
     getDoc,
     getDocs,
+    query,
+    orderBy,
     Timestamp
 } from "firebase/firestore";
 import { Survey } from "@/types";
@@ -32,6 +34,19 @@ export const createSurvey = async (survey: Survey) => {
     } catch (e) {
         console.error("Error creating survey: ", e);
         throw e;
+    }
+};
+
+
+
+export const getAllSurveys = async (): Promise<Survey[]> => {
+    try {
+        const q = query(collection(db, COLLECTION_SURVEYS), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Survey));
+    } catch (e) {
+        console.error("Error getting all surveys: ", e);
+        return [];
     }
 };
 
