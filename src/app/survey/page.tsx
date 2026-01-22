@@ -15,8 +15,8 @@ function SurveyContent() {
 
     useEffect(() => {
         if (!id) {
-            setLoading(false)
-            return
+            const t = setTimeout(() => setLoading(false), 0);
+            return () => clearTimeout(t);
         }
 
         getSurvey(id)

@@ -4,7 +4,6 @@ import {
     addDoc,
     doc,
     getDoc,
-    updateDoc,
     getDocs,
     Timestamp
 } from "firebase/firestore";
@@ -53,7 +52,7 @@ export const getSurvey = async (id: string): Promise<Survey | null> => {
     }
 };
 
-export const submitResponse = async (surveyId: string, answers: Record<string, any>) => {
+export const submitResponse = async (surveyId: string, answers: Record<string, unknown>) => {
     try {
         const surveyRef = doc(db, COLLECTION_SURVEYS, surveyId);
         // Save to a subcollection 'responses'

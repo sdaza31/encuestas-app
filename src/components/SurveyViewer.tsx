@@ -16,11 +16,11 @@ interface SurveyViewerProps {
 }
 
 export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewerProps) {
-    const [answers, setAnswers] = React.useState<Record<string, any>>({})
+    const [answers, setAnswers] = React.useState<Record<string, string | number | string[]>>({})
     const [submitting, setSubmitting] = React.useState(false)
     const [submitted, setSubmitted] = React.useState(false) // Local submitted state for success message
 
-    const handleAnswerChange = (questionId: string, value: any) => {
+    const handleAnswerChange = (questionId: string, value: string | number | string[]) => {
         setAnswers(prev => ({
             ...prev,
             [questionId]: value
@@ -142,7 +142,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                                         type="checkbox"
                                                         name={q.id}
                                                         value={opt.value}
-                                                        checked={Array.isArray(answers[q.id]) && answers[q.id].includes(opt.value)}
+                                                        checked={Array.isArray(answers[q.id]) && (answers[q.id] as string[]).includes(opt.value)}
                                                         onChange={(e) => {
                                                             const current = (answers[q.id] as string[]) || [];
                                                             const newVal = e.target.checked
@@ -182,7 +182,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                     {q.type === 'rating-stars' && (
                                         <StarRating
                                             labels={{ min: 'Muy insatisfecho', max: 'Muy satisfecho' }}
-                                            value={answers[q.id] || 0}
+                                            value={(answers[q.id] as number) || 0}
                                             onChange={(val) => handleAnswerChange(q.id, val)}
                                         />
                                     )}
@@ -191,7 +191,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                         <NumericScale
                                             max={10}
                                             labels={{ min: 'Muy insatisfecho', max: 'Muy satisfecho' }}
-                                            value={answers[q.id] || 0}
+                                            value={(answers[q.id] as number) || 0}
                                             onChange={(val) => handleAnswerChange(q.id, val)}
                                         />
                                     )}
