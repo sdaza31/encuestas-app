@@ -28,29 +28,29 @@ export function StyleEditor({ label, value = {}, onChange }: StyleEditorProps) {
         <div className="space-y-2">
             <Label className="text-xs font-semibold text-muted-foreground uppercase">{label}</Label>
             <div className="flex items-center gap-2">
-                <div className="flex bg-muted rounded-md p-1">
+                <div className="flex bg-muted p-1 rounded-md">
                     <Button
-                        variant={value.textAlign === 'left' || !value.textAlign ? "secondary" : "ghost"}
+                        variant="ghost"
                         size="icon"
-                        className="h-6 w-6"
+                        className={`h-6 w-6 rounded-sm ${value.textAlign === 'left' || !value.textAlign ? "bg-white text-black shadow-sm" : "hover:bg-transparent"}`}
                         onClick={() => handleAlign('left')}
                         title="Alinear Izquierda"
                     >
                         <AlignLeft className="h-3 w-3" />
                     </Button>
                     <Button
-                        variant={value.textAlign === 'center' ? "secondary" : "ghost"}
+                        variant="ghost"
                         size="icon"
-                        className="h-6 w-6"
+                        className={`h-6 w-6 rounded-sm ${value.textAlign === 'center' ? "bg-white text-black shadow-sm" : "hover:bg-transparent"}`}
                         onClick={() => handleAlign('center')}
                         title="Centrar"
                     >
                         <AlignCenter className="h-3 w-3" />
                     </Button>
                     <Button
-                        variant={value.textAlign === 'right' ? "secondary" : "ghost"}
+                        variant="ghost"
                         size="icon"
-                        className="h-6 w-6"
+                        className={`h-6 w-6 rounded-sm ${value.textAlign === 'right' ? "bg-white text-black shadow-sm" : "hover:bg-transparent"}`}
                         onClick={() => handleAlign('right')}
                         title="Alinear Derecha"
                     >
@@ -59,9 +59,9 @@ export function StyleEditor({ label, value = {}, onChange }: StyleEditorProps) {
                 </div>
 
                 <Button
-                    variant={value.isBold ? "secondary" : "outline"}
+                    variant="outline"
                     size="icon"
-                    className="h-8 w-8"
+                    className={`h-8 w-8 ${value.isBold ? "bg-black text-white hover:bg-gray-800 hover:text-white" : ""}`}
                     onClick={toggleBold}
                     title="Negrita"
                 >
