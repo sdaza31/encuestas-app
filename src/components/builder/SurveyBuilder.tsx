@@ -75,9 +75,15 @@ export function SurveyBuilder() {
             setShareUrl(url);
             setLastSave(Date.now()); // Trigger list refresh
             // alert("Encuesta guardada con éxito."); // Eliminamos alert intrusivo
-        } catch (error) {
-            console.error(error);
-            alert("Error al guardar la encuesta. Verifica la consola.");
+        } catch (error: any) {
+            console.error("Error saving survey:", error);
+            const msg = error?.message || "Error desconocido";
+
+            if (msg.includes("permission-denied") || msg.includes("Missing or insufficient permissions")) {
+                alert("⛔ Error de permisos: No tienes acceso para escribir en la base de datos.\n\nPor favor, ve a Firebase Console -> Firestore Database -> Rules y asegúrate de permitir la escritura.\n\nDetalle: " + msg);
+            } else {
+                alert(`❌ Error al guardar:\n${msg}`);
+            }
         } finally {
             setIsSaving(false);
         }
