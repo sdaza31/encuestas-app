@@ -243,6 +243,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                                 labels={{ min: 'Muy insatisfecho', max: 'Muy satisfecho' }}
                                                 value={(answers[q.id] as number) || 0}
                                                 onChange={(val) => handleAnswerChange(q.id, val)}
+                                                activeColor={survey.theme?.activeColor}
                                             />
                                         )}
 
@@ -252,6 +253,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                                 labels={{ min: 'Muy insatisfecho', max: 'Muy satisfecho' }}
                                                 value={(answers[q.id] as number) || 0}
                                                 onChange={(val) => handleAnswerChange(q.id, val)}
+                                                activeColor={survey.theme?.activeColor}
                                             />
                                         )}
                                     </div>

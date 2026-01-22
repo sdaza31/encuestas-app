@@ -7,9 +7,10 @@ interface RatingProps {
     onChange?: (value: number) => void
     max?: number
     labels?: { min: string; max: string }
+    activeColor?: string
 }
 
-export function StarRating({ value = 0, onChange, max = 5, labels }: RatingProps) {
+export function StarRating({ value = 0, onChange, max = 5, labels, activeColor }: RatingProps) {
     const [hoverValue, setHoverValue] = React.useState<number | null>(null)
 
     return (
@@ -25,14 +26,18 @@ export function StarRating({ value = 0, onChange, max = 5, labels }: RatingProps
                     const ratingValue = i + 1
                     const isFilled = (hoverValue !== null ? hoverValue : value) >= ratingValue
 
+                    const style = isFilled && activeColor ? { color: activeColor } : {};
+                    const className = isFilled && !activeColor ? "text-yellow-400" : isFilled ? "" : "text-gray-300";
+
                     return (
                         <button
                             key={i}
                             type="button"
                             className={cn(
                                 "p-1 transition-colors focus:outline-none",
-                                isFilled ? "text-yellow-400" : "text-gray-300"
+                                className
                             )}
+                            style={style}
                             onMouseEnter={() => setHoverValue(ratingValue)}
                             onMouseLeave={() => setHoverValue(null)}
                             onClick={() => onChange?.(ratingValue)}
@@ -46,9 +51,11 @@ export function StarRating({ value = 0, onChange, max = 5, labels }: RatingProps
     )
 }
 
-export function NumericScale({ value, onChange, max = 10, labels }: RatingProps) {
+export function NumericScale({ value, onChange, max = 10, labels, activeColor }: RatingProps) {
     // Function to calculate color based on value (Red -> Yellow -> Green)
     const getColor = (index: number, total: number) => {
+        if (activeColor) return activeColor;
+
         // Map index (0 to total-1) to Hue (0 to 120)
         // 0 -> Red (0)
         // Middle -> Yellow (60)

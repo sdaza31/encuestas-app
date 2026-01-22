@@ -36,6 +36,7 @@ export interface Survey {
         descriptionStyle?: TextStyle;
         questionTitleStyle?: TextStyle;
         answerStyle?: TextStyle;
+        activeColor?: string; // Color para elementos interactivos como estrellas y escalas
     };
     limitOneResponse?: boolean;
     thankYouMessage?: string;
