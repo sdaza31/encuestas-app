@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Plus, Eye, Save } from "lucide-react"
 
-import { createSurvey, updateSurvey } from "@/lib/services"
+import { createSurvey, updateSurvey, uploadImage } from "@/lib/services"
 import { SurveyViewer } from "@/components/SurveyViewer"
 import { SurveyList } from "@/components/admin/SurveyList"
 
@@ -275,20 +275,74 @@ export function SurveyBuilder() {
                                         />
                                     </div>
                                 </div>
-                                <div className="grid gap-2">
-                                    <Label htmlFor="banner-url">URL del Banner/Imagen</Label>
-                                    <Input
-                                        id="banner-url"
-                                        placeholder="https://ejemplo.com/imagen.jpg"
-                                        value={survey.theme?.bannerUrl || ""}
-                                        onChange={(e) => setSurvey({
-                                            ...survey,
-                                            theme: {
-                                                backgroundColor: survey.theme?.backgroundColor || "#ffffff",
-                                                bannerUrl: e.target.value
-                                            }
-                                        })}
-                                    />
+                                <Label htmlFor="banner-url">Banner de la Encuesta</Label>
+                                <div className="space-y-2">
+                                    <div className="flex gap-2">
+                                        <Input
+                                            id="banner-url"
+                                            placeholder="https://ejemplo.com/imagen.jpg"
+                                            value={survey.theme?.bannerUrl || ""}
+                                            onChange={(e) => setSurvey({
+                                                ...survey,
+                                                theme: {
+                                                    backgroundColor: survey.theme?.backgroundColor || "#ffffff",
+                                                    bannerUrl: e.target.value,
+                                                    titleStyle: survey.theme?.titleStyle,
+                                                    descriptionStyle: survey.theme?.descriptionStyle,
+                                                    questionTitleStyle: survey.theme?.questionTitleStyle,
+                                                    answerStyle: survey.theme?.answerStyle
+                                                }
+                                            })}
+                                            className="flex-1"
+                                        />
+                                        <div className="relative">
+                                            <input
+                                                type="file"
+                                                id="banner-upload"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={async (e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (!file) return;
+
+                                                    // Basic validation
+                                                    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                                                        alert("El archivo es demasiado grande (max 5MB)");
+                                                        return;
+                                                    }
+
+                                                    try {
+                                                        setIsSaving(true); // Reuse saving state for loading UI
+                                                        const url = await uploadImage(file);
+                                                        setSurvey(prev => ({
+                                                            ...prev,
+                                                            theme: {
+                                                                ...prev.theme,
+                                                                backgroundColor: prev.theme?.backgroundColor || "#ffffff",
+                                                                bannerUrl: url
+                                                            }
+                                                        }));
+                                                    } catch (error) {
+                                                        console.error(error);
+                                                        alert("Error al subir la imagen");
+                                                    } finally {
+                                                        setIsSaving(false);
+                                                    }
+                                                }}
+                                            />
+                                            <Button
+                                                variant="secondary"
+                                                onClick={() => document.getElementById('banner-upload')?.click()}
+                                                disabled={isSaving}
+                                                type="button"
+                                            >
+                                                {isSaving ? "Subiendo..." : "Subir Imagen"}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground">
+                                        Recomendado: 1920x400px o similar wide. Max 2MB. JPG/PNG.
+                                    </p>
                                 </div>
                             </div>
                         </div>
