@@ -155,13 +155,14 @@ function ResultsContent() {
                     </CardContent>
                 </Card>
             </div>
-            )
+        </div>
+    )
 }
 
-            export default function ResultsPage() {
+export default function ResultsPage() {
     return (
-            <Suspense fallback={<div>Cargando...</div>}>
-                <ResultsContent />
-            </Suspense>
-            )
+        <Suspense fallback={<div>Cargando...</div>}>
+            <ResultsContent />
+        </Suspense>
+    )
 }
