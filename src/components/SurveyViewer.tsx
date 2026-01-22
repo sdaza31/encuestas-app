@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Survey } from "@/types"
+import { Survey, TextStyle } from "@/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,6 +14,28 @@ interface SurveyViewerProps {
     isPreview?: boolean
     onBack?: () => void
 }
+
+const fontSizeMap: Record<string, string> = {
+    'sm': '0.875rem',
+    'base': '1rem',
+    'lg': '1.125rem',
+    'xl': '1.25rem',
+    '2xl': '1.5rem',
+    '3xl': '1.875rem',
+    '4xl': '2.25rem',
+};
+
+const getTextStyle = (style?: TextStyle): React.CSSProperties => {
+    if (!style) return {};
+    return {
+        textAlign: style.textAlign,
+        color: style.color,
+        fontWeight: style.isBold ? 'bold' : 'normal',
+        fontStyle: style.isItalic ? 'italic' : 'normal',
+        fontSize: style.fontSize ? fontSizeMap[style.fontSize] : undefined,
+        fontFamily: style.fontFamily === 'inherit' ? undefined : style.fontFamily,
+    };
+};
 
 export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewerProps) {
     const [answers, setAnswers] = React.useState<Record<string, string | number | string[]>>({})
@@ -116,20 +138,13 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                     <div className="p-6 md:p-8" style={{ textAlign: survey.theme?.titleStyle?.textAlign }}>
                         <h1
                             className="text-3xl font-bold tracking-tight mb-2"
-                            style={{
-                                color: survey.theme?.titleStyle?.color,
-                                fontWeight: survey.theme?.titleStyle?.isBold ? 'bold' : 'normal'
-                            }}
+                            style={getTextStyle(survey.theme?.titleStyle)}
                         >
                             {survey.title || "Sin título"}
                         </h1>
                         <p
                             className="text-muted-foreground"
-                            style={{
-                                textAlign: survey.theme?.descriptionStyle?.textAlign,
-                                color: survey.theme?.descriptionStyle?.color,
-                                fontWeight: survey.theme?.descriptionStyle?.isBold ? 'bold' : 'normal'
-                            }}
+                            style={getTextStyle(survey.theme?.descriptionStyle)}
                         >
                             {survey.description}
                         </p>
@@ -142,20 +157,12 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                         <div key={q.id} className="bg-card p-6 rounded-xl shadow-sm border space-y-4 transition-all hover:shadow-md">
                             <Label
                                 className="text-base font-semibold block"
-                                style={{
-                                    textAlign: survey.theme?.questionTitleStyle?.textAlign,
-                                    color: survey.theme?.questionTitleStyle?.color,
-                                    fontWeight: survey.theme?.questionTitleStyle?.isBold ? 'bold' : 'normal'
-                                }}
+                                style={getTextStyle(survey.theme?.questionTitleStyle)}
                             >
                                 {idx + 1}. {q.title} {q.required && <span className="text-destructive">*</span>}
                             </Label>
 
-                            <div style={{
-                                textAlign: survey.theme?.answerStyle?.textAlign,
-                                color: survey.theme?.answerStyle?.color,
-                                fontWeight: survey.theme?.answerStyle?.isBold ? 'bold' : 'normal'
-                            }}>
+                            <div style={getTextStyle(survey.theme?.answerStyle)}>
 
                                 {q.type === 'text' && (
                                     <Input

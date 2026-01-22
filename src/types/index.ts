@@ -22,8 +22,10 @@ export interface Question {
 export interface TextStyle {
     textAlign?: 'left' | 'center' | 'right';
     isBold?: boolean;
+    isItalic?: boolean;
     color?: string;
-    fontSize?: 'sm' | 'base' | 'lg' | 'xl' | '2xl';
+    fontSize?: 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
+    fontFamily?: string;
 }
 
 export interface Survey {
