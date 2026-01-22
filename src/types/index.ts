@@ -16,6 +16,7 @@ export interface Question {
         inputType?: 'text' | 'number' | 'any';
         maxLength?: number;
     };
+    iconStyle?: 'star' | 'heart' | 'user' | 'smile';
 }
 
 export interface TextStyle {

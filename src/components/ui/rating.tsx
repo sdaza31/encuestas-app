@@ -1,6 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
-import { Star } from "lucide-react"
+import { Star, Heart, User, Frown, Meh, Smile, UserX, UserCheck } from "lucide-react"
 
 interface RatingProps {
     value?: number
@@ -8,10 +8,53 @@ interface RatingProps {
     max?: number
     labels?: { min: string; max: string }
     activeColor?: string
+    iconStyle?: 'star' | 'heart' | 'user' | 'smile'
 }
 
-export function StarRating({ value = 0, onChange, max = 5, labels, activeColor }: RatingProps) {
+export function StarRating({ value = 0, onChange, max = 5, labels, activeColor, iconStyle = 'star' }: RatingProps) {
     const [hoverValue, setHoverValue] = React.useState<number | null>(null)
+
+    const getIcon = (index: number, val: number) => {
+        const rating = index + 1;
+        const normalize = (r: number) => r / max; // 0..1
+        const ratio = normalize(rating);
+
+        if (iconStyle === 'heart') return <Heart className="w-8 h-8 fill-current" />;
+
+        if (iconStyle === 'user') {
+            // Logic requested: 
+            // Low -> Arms crossed (UserX/UserMinus approx)
+            // Mid -> Thinking (User)
+            // High -> Waving (UserCheck/Hand approx)
+            // Ideally we stick to standard lucide or use widely available ones.
+            // Let's use: UserX (Low), User (Mid), UserCheck (High/Happy)
+            if (ratio <= 0.4) return <UserX className="w-8 h-8 fill-current" />;
+            if (ratio <= 0.7) return <User className="w-8 h-8 fill-current" />;
+            return <UserCheck className="w-8 h-8 fill-current" />;
+        }
+
+        if (iconStyle === 'smile') {
+            if (ratio <= 0.4) return <Frown className="w-8 h-8 fill-current" />;
+            if (ratio <= 0.7) return <Meh className="w-8 h-8 fill-current" />;
+            return <Smile className="w-8 h-8 fill-current" />;
+        }
+
+        // Default star
+        return <Star className="w-8 h-8 fill-current" />;
+    }
+
+    const getDynamicColor = (index: number) => {
+        // Only for user/smile dynamic styles if no activeColor is forced? 
+        // Or should we always respect activeColor if present? 
+        // User asked for "shape change", usually implies color change too like in the image (Red -> Yellow -> Green).
+        // Let's apply traffic light colors IF activeColor is NOT set.
+        if (activeColor) return activeColor;
+
+        const ratio = (index + 1) / max;
+        if (ratio <= 0.4) return "text-red-500";
+        if (ratio <= 0.7) return "text-yellow-500";
+        return "text-green-500";
+    }
 
     return (
         <div className="space-y-2">
@@ -24,25 +67,50 @@ export function StarRating({ value = 0, onChange, max = 5, labels, activeColor }
             <div className="flex gap-1">
                 {Array.from({ length: max }).map((_, i) => {
                     const ratingValue = i + 1
-                    const isFilled = (hoverValue !== null ? hoverValue : value) >= ratingValue
+                    const isHoveredOrFilled = (hoverValue !== null ? hoverValue : value) >= ratingValue
 
-                    const style = isFilled && activeColor ? { color: activeColor } : {};
-                    const className = isFilled && !activeColor ? "text-yellow-400" : isFilled ? "" : "text-gray-300";
+                    // For dynamic icons (smile/user), we want the icon to reflect the CURRENT rating being hovered/selected, 
+                    // NOT the individual star's position necessarily? 
+                    // Actually standard behavior: 1st star always sad, 5th star always happy. 
+                    // BUT in the user image, it looks like a scale where each step has its own static identity.
+                    // Let's implement static identity per step (1=Red/Crossed, 5=Green/Waving).
+
+                    const Icon = getIcon(i, ratingValue);
+
+                    // Color logic
+                    let colorClass = "text-gray-200";
+                    let style: React.CSSProperties = {};
+
+                    if (isHoveredOrFilled) {
+                        if (activeColor) {
+                            style = { color: activeColor };
+                        } else if (iconStyle === 'user' || iconStyle === 'smile') {
+                            // Force dynamic colors for these styles if no custom color
+                            const dynColor = getDynamicColor(i);
+                            if (dynColor.startsWith("text-")) colorClass = dynColor;
+                            else style = { color: dynColor };
+                        } else {
+                            // Default yellow for stars/hearts
+                            colorClass = iconStyle === 'heart' ? "text-red-500" : "text-yellow-400";
+                        }
+                    } else {
+                        colorClass = "text-gray-200"; // Empty state
+                    }
 
                     return (
                         <button
                             key={i}
                             type="button"
                             className={cn(
-                                "p-1 transition-colors focus:outline-none",
-                                className
+                                "p-1 transition-colors focus:outline-none transform hover:scale-110",
+                                !activeColor && !style.color ? colorClass : ""
                             )}
                             style={style}
                             onMouseEnter={() => setHoverValue(ratingValue)}
                             onMouseLeave={() => setHoverValue(null)}
                             onClick={() => onChange?.(ratingValue)}
                         >
-                            <Star className="w-8 h-8 fill-current" />
+                            {Icon}
                         </button>
                     )
                 })}

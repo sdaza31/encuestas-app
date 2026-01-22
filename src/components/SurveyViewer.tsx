@@ -244,6 +244,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                                 value={(answers[q.id] as number) || 0}
                                                 onChange={(val) => handleAnswerChange(q.id, val)}
                                                 activeColor={survey.theme?.activeColor}
+                                                iconStyle={q.iconStyle}
                                             />
                                         )}
 

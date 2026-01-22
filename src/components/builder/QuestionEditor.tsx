@@ -140,6 +140,31 @@ export function QuestionEditor({ question, onUpdate, onDelete }: QuestionEditorP
                     </div>
                 )}
 
+                {/* Rating Icon Style Editor */}
+                {question.type === 'rating-stars' && (
+                    <div className="grid gap-2 mt-4 p-4 bg-muted/30 rounded-lg border border-dashed">
+                        <Label htmlFor={`q-icon-style-${question.id}`}>Estilo de Icono</Label>
+                        <Select
+                            id={`q-icon-style-${question.id}`}
+                            value={question.iconStyle || 'star'}
+                            onChange={(e) => onUpdate({
+                                ...question,
+                                iconStyle: e.target.value as any
+                            })}
+                        >
+                            <option value="star">⭐ Estrellas (Clásico)</option>
+                            <option value="heart">❤️ Corazones</option>
+                            <option value="user">👤 Personas / Usuarios</option>
+                            <option value="smile">😃 Emociones (Dinámico: Enojado - Neutro - Feliz)</option>
+                        </Select>
+                        <p className="text-xs text-muted-foreground">
+                            {question.iconStyle === 'smile'
+                                ? "Los iconos cambiarán automáticamente según la calificación elegida."
+                                : "Se usará este icono para todos los niveles de calificación."}
+                        </p>
+                    </div>
+                )}
+
                 {/* Options Editor */}
                 {(question.type === 'radio' || question.type === 'checkbox' || question.type === 'select') && (
                     <div className="space-y-2 mt-4">
