@@ -47,19 +47,20 @@ function ResultsContent() {
         if (!survey || responses.length === 0) return;
 
         // Headers
-        const headers = ['Fecha', ...survey.questions.map(q => q.title)];
+        const headers = ['Fecha de Envío', ...survey.questions.map(q => q.title)];
         const csvRows = [headers.join(',')];
 
         // Rows
         for (const r of responses) {
             const row = [
+                // Formato de fecha y hora local completo
                 r.submittedAt?.toDate ? `"${r.submittedAt.toDate().toLocaleString()}"` : '"N/A"',
                 ...survey.questions.map(q => {
                     const answer = r.answers?.[q.id];
                     let displayValue = answer;
 
                     if (Array.isArray(answer)) {
-                        displayValue = answer.join("; "); // Usar punto y coma para separar valores en array dentro de CSV
+                        displayValue = answer.join("; ");
                     } else if (typeof answer === 'boolean') {
                         displayValue = answer ? 'Sí' : 'No';
                     } else if (q.type === 'radio' || q.type === 'select') {
@@ -67,7 +68,6 @@ function ResultsContent() {
                         if (option) displayValue = option.label;
                     }
 
-                    // Escapar comillas dobles y envolver en comillas
                     const stringValue = displayValue?.toString() || '';
                     const escaped = stringValue.replace(/"/g, '""');
                     return `"${escaped}"`;
@@ -77,7 +77,8 @@ function ResultsContent() {
         }
 
         const csvData = csvRows.join('\n');
-        const blob = new Blob([csvData], { type: 'text/csv' });
+        // Agregar BOM para que Excel reconozca UTF-8 correctamente
+        const blob = new Blob(["\uFEFF" + csvData], { type: 'text/csv;charset=utf-8;' });
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.setAttribute('hidden', '');
