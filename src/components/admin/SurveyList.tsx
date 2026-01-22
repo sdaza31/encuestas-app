@@ -89,9 +89,6 @@ export function SurveyList({ onSelect, currentSurveyId, lastUpdated }: SurveyLis
                                 className="h-6 w-6 p-0"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    // Make sure we handle both local and prod URLs correctly if possible, 
-                                    // but simply using pathname logic is safer as in builder.
-                                    // But let's stick to what worked or improve it.
                                     const basePath = window.location.pathname.includes('/encuestas-app') ? '/encuestas-app' : '';
                                     const url = `${window.location.origin}${basePath}/survey?id=${survey.id}`;
                                     window.open(url, '_blank');
@@ -99,6 +96,15 @@ export function SurveyList({ onSelect, currentSurveyId, lastUpdated }: SurveyLis
                                 title="Abrir encuesta"
                             >
                                 <ExternalLink className="h-4 w-4" />
+                            </Button>
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0 text-red-500 hover:text-red-700 hover:bg-red-100"
+                                onClick={(e) => handleDelete(e, survey.id)}
+                                title="Eliminar encuesta"
+                            >
+                                <Trash2 className="h-4 w-4" />
                             </Button>
                         </div>
                     </div>
