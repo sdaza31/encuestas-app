@@ -8,7 +8,8 @@ import {
     deleteDoc,
     query,
     orderBy,
-    Timestamp
+    Timestamp,
+    setDoc
 } from "firebase/firestore";
 import { Survey } from "@/types";
 
@@ -34,6 +35,28 @@ export const createSurvey = async (survey: Survey) => {
         return docRef.id;
     } catch (e) {
         console.error("Error creating survey: ", e);
+        throw e;
+    }
+};
+
+export const updateSurvey = async (survey: Survey) => {
+    try {
+        if (!survey.id) throw new Error("Cannot update survey without ID");
+
+        const cleanSurvey = JSON.parse(JSON.stringify(survey));
+        const docRef = doc(db, COLLECTION_SURVEYS, survey.id);
+
+        // Remove id from data to avoid duplication/confusion inside the doc
+        delete cleanSurvey.id;
+
+        await setDoc(docRef, {
+            ...cleanSurvey,
+            updatedAt: Timestamp.now()
+        }, { merge: true });
+
+        return survey.id;
+    } catch (e) {
+        console.error("Error updating survey: ", e);
         throw e;
     }
 };

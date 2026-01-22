@@ -20,6 +20,17 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
     const [submitting, setSubmitting] = React.useState(false)
     const [submitted, setSubmitted] = React.useState(false) // Local submitted state for success message
 
+    const [alreadyResponded, setAlreadyResponded] = React.useState(false);
+
+    React.useEffect(() => {
+        if (survey.limitOneResponse && !isPreview && survey.id) {
+            const hasResponded = localStorage.getItem(`survey_responded_${survey.id}`);
+            if (hasResponded) {
+                setAlreadyResponded(true);
+            }
+        }
+    }, [survey.id, survey.limitOneResponse, isPreview]);
+
     const handleAnswerChange = (questionId: string, value: string | number | string[]) => {
         setAnswers(prev => ({
             ...prev,
@@ -37,12 +48,28 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
         try {
             await submitResponse(survey.id, answers);
             setSubmitted(true);
+            if (survey.limitOneResponse) {
+                localStorage.setItem(`survey_responded_${survey.id}`, 'true');
+            }
         } catch (error) {
             console.error(error);
             alert("Error al enviar la respuesta.");
         } finally {
             setSubmitting(false);
         }
+    }
+
+    if (alreadyResponded) {
+        return (
+            <div className="min-h-screen flex items-center justify-center p-4 bg-muted/20">
+                <div className="max-w-md w-full bg-card p-8 rounded-lg shadow-lg text-center space-y-4 border border-yellow-200 bg-yellow-50">
+                    <h2 className="text-xl font-bold text-yellow-800">Ya has respondido</h2>
+                    <p className="text-yellow-700">
+                        Esta encuesta solo permite una respuesta por persona y ya hemos registrado la tuya.
+                    </p>
+                </div>
+            </div>
+        )
     }
 
     if (submitted) {

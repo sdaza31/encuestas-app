@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Plus, Eye, Save } from "lucide-react"
 
-import { createSurvey } from "@/lib/services"
+import { createSurvey, updateSurvey } from "@/lib/services"
 import { SurveyViewer } from "@/components/SurveyViewer"
 import { SurveyList } from "@/components/admin/SurveyList"
 
@@ -24,6 +24,7 @@ export function SurveyBuilder() {
     const [isPreview, setIsPreview] = React.useState(false)
     const [isSaving, setIsSaving] = React.useState(false)
     const [shareUrl, setShareUrl] = React.useState<string | null>(null)
+    const [isUpdate, setIsUpdate] = React.useState(false) // Track if we are updating an existing remote survey
 
 
 
@@ -77,10 +78,20 @@ export function SurveyBuilder() {
     const handleSave = async () => {
         setIsSaving(true);
         try {
-            const id = await createSurvey(survey);
+            let id = survey.id;
 
-            // IMPORTANTE: Actualizamos el ID local con el real de Firestore
-            setSurvey(prev => ({ ...prev, id: id }));
+            // Si ya hemos guardado remotamente (isUpdate is true) o detectamos que el ID no es uno generado localmente (simple heuristic?),
+            // usaremos update. 
+            // La mejor forma es confiar en flag isUpdate que seteamos al crear o al cargar.
+
+            if (isUpdate) {
+                await updateSurvey(survey);
+                // id se mantiene
+            } else {
+                id = await createSurvey(survey);
+                setSurvey(prev => ({ ...prev, id: id }));
+                setIsUpdate(true); // From now on, it's an update
+            }
 
             const url = getShareUrl(id);
             setShareUrl(url);
@@ -104,6 +115,7 @@ export function SurveyBuilder() {
         if (confirm("Si cambias de encuesta sin guardar, perderás los cambios actuales. ¿Continuar?")) {
             setSurvey(selectedSurvey);
             setShareUrl(null);
+            setIsUpdate(true); // Al seleccionar una existente, estamos en modo update
         }
     };
 
@@ -116,6 +128,7 @@ export function SurveyBuilder() {
                 questions: []
             });
             setShareUrl(null);
+            setIsUpdate(false); // Nueva encuesta = create mode
         }
     }
 
@@ -205,6 +218,27 @@ export function SurveyBuilder() {
                                     onChange={(e) => setSurvey({ ...survey, thankYouMessage: e.target.value })}
                                     placeholder="¡Gracias! Tus respuestas han sido enviadas. (Opcional)"
                                 />
+                            </div>
+
+                            <div className="flex items-center space-x-2 border p-3 rounded-md bg-muted/20">
+                                <input
+                                    type="checkbox"
+                                    id="limit-response"
+                                    checked={survey.limitOneResponse || false}
+                                    onChange={(e) => setSurvey({ ...survey, limitOneResponse: e.target.checked })}
+                                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                                />
+                                <div className="grid gap-1.5 leading-none">
+                                    <label
+                                        htmlFor="limit-response"
+                                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                    >
+                                        Limitar a 1 respuesta por persona
+                                    </label>
+                                    <p className="text-xs text-muted-foreground">
+                                        Si se activa, el usuario solo podrá enviar la encuesta una vez desde su navegador.
+                                    </p>
+                                </div>
                             </div>
                         </div>
 

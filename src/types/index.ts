@@ -37,6 +37,7 @@ export interface Survey {
         questionTitleStyle?: TextStyle;
         answerStyle?: TextStyle;
     };
+    limitOneResponse?: boolean;
     thankYouMessage?: string;
     questions: Question[];
 }
