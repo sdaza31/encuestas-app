@@ -58,23 +58,32 @@ export function SurveyBuilder() {
 
     const [lastSave, setLastSave] = React.useState(0)
 
+    // Helper para obtener URL
+    const getShareUrl = (id: string) => {
+        const basePath = window.location.pathname.includes('/encuestas-app') ? '/encuestas-app' : '';
+        return `${window.location.origin}${basePath}/survey?id=${id}`;
+    }
+
+    const handleShare = () => {
+        if (!survey.id) return;
+        const url = getShareUrl(survey.id);
+        // Si el ID es largo (UUID), probablemente no funcionará si no se ha guardado,
+        // pero le damos el link igual.
+        setShareUrl(url);
+        navigator.clipboard.writeText(url).then(() => alert("Link copiado al portapapeles!"));
+    }
+
     const handleSave = async () => {
         setIsSaving(true);
         try {
             const id = await createSurvey(survey);
 
-            // Si es una encuesta nueva que acabamos de guardar, actualizamos el ID local
-            // para que futuros guardados sean updates (aunque createSurvey actual siempre crea nuevo por ahora en services.ts, 
-            // idealmente deberíamos hacer update si ya existe ID, pero services.ts siempre hace addDoc. 
-            // Por ahora asumimos comportamiento de create siempre).
+            // IMPORTANTE: Actualizamos el ID local con el real de Firestore
+            setSurvey(prev => ({ ...prev, id: id }));
 
-            // Construct global URL
-            // Usamos window.location.origin y añadimos basePath si es necesario
-            const basePath = window.location.pathname.includes('/encuestas-app') ? '/encuestas-app' : '';
-            const url = `${window.location.origin}${basePath}/survey?id=${id}`;
+            const url = getShareUrl(id);
             setShareUrl(url);
             setLastSave(Date.now()); // Trigger list refresh
-            // alert("Encuesta guardada con éxito."); // Eliminamos alert intrusivo
         } catch (error: any) {
             console.error("Error saving survey:", error);
             const msg = error?.message || "Error desconocido";
@@ -128,6 +137,9 @@ export function SurveyBuilder() {
                 <div className="flex gap-2">
                     <Button variant="outline" onClick={handleNewSurvey}>
                         <Plus className="mr-2 h-4 w-4" /> Nueva
+                    </Button>
+                    <Button variant="outline" onClick={handleShare} title="Ver link para compartir">
+                        <span className="mr-2">🔗</span> Compartir
                     </Button>
                     <Button variant="secondary" onClick={() => setIsPreview(true)}>
                         <Eye className="mr-2 h-4 w-4" /> Vista Previa

@@ -43,7 +43,9 @@ export const getAllSurveys = async (): Promise<Survey[]> => {
     try {
         const q = query(collection(db, COLLECTION_SURVEYS), orderBy("createdAt", "desc"));
         const querySnapshot = await getDocs(q);
-        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Survey));
+        // IMPORTANTE: Ponemos ...doc.data() antes de id: doc.id para asegurar que el ID real de Firestore
+        // sobrescriba cualquier ID interno que se haya guardado en el documento json.
+        return querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Survey));
     } catch (e) {
         console.error("Error getting all surveys: ", e);
         return [];
@@ -56,7 +58,7 @@ export const getSurvey = async (id: string): Promise<Survey | null> => {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-            return { id: docSnap.id, ...docSnap.data() } as Survey;
+            return { ...docSnap.data(), id: docSnap.id } as Survey;
         } else {
             console.log("No such document!");
             return null;
