@@ -35,6 +35,7 @@ export interface Survey {
     theme?: ThemeConfig;
     limitOneResponse?: boolean;
     thankYouMessage?: string;
+    footerMessage?: string;
     questions: Question[];
 }
 

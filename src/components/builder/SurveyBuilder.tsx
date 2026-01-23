@@ -204,6 +204,15 @@ export function SurveyBuilder() {
                                     placeholder="¡Gracias! Tus respuestas han sido enviadas. (Opcional)"
                                 />
                             </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="footer-msg">Mensaje Pie de Encuesta (antes de enviar)</Label>
+                                <Input
+                                    id="footer-msg"
+                                    value={survey.footerMessage || ""}
+                                    onChange={(e) => setSurvey({ ...survey, footerMessage: e.target.value })}
+                                    placeholder="Ej. Gracias por tu tiempo. Tus respuestas son anónimas."
+                                />
+                            </div>
 
                             <div className="flex items-center space-x-2 border p-3 rounded-md bg-muted/20">
                                 <input

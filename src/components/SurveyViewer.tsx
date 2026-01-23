@@ -268,7 +268,15 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                     ))}
                 </div>
 
-                <div className="mx-4 mt-8 pb-12">
+                <div className="mx-4 mt-8 pb-12 space-y-4">
+                    {survey.footerMessage && (
+                        <div className="bg-card p-4 rounded-xl shadow-sm border text-center">
+                            <p className="text-muted-foreground whitespace-pre-line" style={getTextStyle(survey.theme?.descriptionStyle)}>
+                                {survey.footerMessage}
+                            </p>
+                        </div>
+                    )}
+
                     <Button
                         size="lg"
                         className="w-full shadow-lg text-lg py-6"
