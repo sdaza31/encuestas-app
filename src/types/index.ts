@@ -24,7 +24,7 @@ export interface TextStyle {
     isBold?: boolean;
     isItalic?: boolean;
     color?: string;
-    fontSize?: 'sm' | 'base' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
+    fontSize?: number;
     fontFamily?: string;
 }
 

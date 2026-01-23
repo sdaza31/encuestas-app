@@ -15,16 +15,6 @@ interface SurveyViewerProps {
     onBack?: () => void
 }
 
-const fontSizeMap: Record<string, string> = {
-    'sm': '0.875rem',
-    'base': '1rem',
-    'lg': '1.125rem',
-    'xl': '1.25rem',
-    '2xl': '1.5rem',
-    '3xl': '1.875rem',
-    '4xl': '2.25rem',
-};
-
 const getTextStyle = (style?: TextStyle): React.CSSProperties => {
     if (!style) return {};
     return {
@@ -32,7 +22,7 @@ const getTextStyle = (style?: TextStyle): React.CSSProperties => {
         color: style.color,
         fontWeight: style.isBold ? 'bold' : 'normal',
         fontStyle: style.isItalic ? 'italic' : 'normal',
-        fontSize: style.fontSize ? fontSizeMap[style.fontSize] : undefined,
+        fontSize: style.fontSize ? `${style.fontSize}px` : undefined,
         fontFamily: style.fontFamily === 'inherit' ? undefined : style.fontFamily,
     };
 };
