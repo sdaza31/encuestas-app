@@ -32,7 +32,7 @@ export default function LoginPage() {
         <div
             className="min-h-screen w-full relative flex items-center justify-center overflow-hidden"
             style={{
-                background: 'linear-gradient(160deg, rgba(22, 17, 56, 1) 0%, rgba(130, 42, 136, 1) 66%, rgba(169, 112, 175, 1) 100%)'
+                background: 'linear-gradient(160deg, rgba(22, 17, 56, 1) 32%, rgba(130, 42, 136, 1) 66%, rgba(169, 112, 175, 1) 100%)'
             }}
         >
 
