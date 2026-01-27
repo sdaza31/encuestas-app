@@ -72,21 +72,27 @@ export function StarRating({ value = 0, onChange, max = 5, labels, activeColor, 
                     const Icon = getIcon(i, ratingValue);
 
                     // Color logic
-                    let colorClass = "text-gray-200";
+                    let colorClass = "";
                     let style: React.CSSProperties = {};
 
-                    if (isHoveredOrFilled) {
-                        if (activeColor) {
-                            style = { color: activeColor };
-                        } else if (iconStyle === 'user' || iconStyle === 'smile') {
-                            const dynColor = getDynamicColor(i);
-                            if (dynColor.startsWith("text-")) colorClass = dynColor;
-                            else style = { color: dynColor };
-                        } else {
-                            colorClass = iconStyle === 'heart' ? "text-red-500" : "text-yellow-400";
-                        }
+                    if (activeColor) {
+                        style = {
+                            color: activeColor,
+                            opacity: isHoveredOrFilled ? 1 : 0.5
+                        };
                     } else {
-                        colorClass = "text-gray-200";
+                        // Default fallback if no activeColor is explicitly passed (though it usually is)
+                        if (isHoveredOrFilled) {
+                            if (iconStyle === 'user' || iconStyle === 'smile') {
+                                const dynColor = getDynamicColor(i);
+                                if (dynColor.startsWith("text-")) colorClass = dynColor;
+                                else style = { color: dynColor };
+                            } else {
+                                colorClass = iconStyle === 'heart' ? "text-red-500" : "text-yellow-400";
+                            }
+                        } else {
+                            colorClass = "text-gray-200";
+                        }
                     }
 
                     return (
@@ -94,7 +100,7 @@ export function StarRating({ value = 0, onChange, max = 5, labels, activeColor, 
                             key={i}
                             type="button"
                             className={cn(
-                                "p-1 transition-colors focus:outline-none transform hover:scale-110",
+                                "p-1 transition-all focus:outline-none transform hover:scale-110",
                                 !activeColor && !style.color ? colorClass : ""
                             )}
                             style={style}
