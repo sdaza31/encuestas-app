@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Eye, EyeOff } from "lucide-react"
+import Image from "next/image"
 
 export default function LoginPage() {
     const [email, setEmail] = useState("")
@@ -48,10 +49,13 @@ export default function LoginPage() {
 
                     {/* Logo Area */}
                     <div className="mb-8 flex flex-col items-center">
-                        <img
+                        <Image
                             src="/ccm-tec-logo.png"
                             alt="CCM Tec Logo"
+                            width={300}
+                            height={150}
                             className="w-48 h-auto object-contain"
+                            priority
                         />
                     </div>
 
