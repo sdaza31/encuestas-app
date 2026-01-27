@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Select } from "@/components/ui/select"
 import { StarRating, NumericScale } from "@/components/ui/rating"
 import { submitResponse } from "@/lib/services"
+import { AccessGate } from "@/components/AccessGate"
 
 interface SurveyViewerProps {
     survey: Survey
@@ -33,6 +34,14 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
     const [submitted, setSubmitted] = React.useState(false) // Local submitted state for success message
 
     const [alreadyResponded, setAlreadyResponded] = React.useState(false);
+    const [hasAccess, setHasAccess] = React.useState(false);
+
+    React.useEffect(() => {
+        // If public or preview, grant access immediately
+        if (isPreview || survey.privacy !== 'private') {
+            setHasAccess(true);
+        }
+    }, [survey.privacy, isPreview]);
 
     React.useEffect(() => {
         if (survey.limitOneResponse && !isPreview && survey.id) {
@@ -42,6 +51,16 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
             }
         }
     }, [survey.id, survey.limitOneResponse, isPreview]);
+
+    if (!hasAccess) {
+        return (
+            <AccessGate
+                allowedEmails={survey.allowedEmails}
+                onAccessGranted={() => setHasAccess(true)}
+                surveyTitle={survey.title}
+            />
+        );
+    }
 
     const handleAnswerChange = (questionId: string, value: string | number | string[]) => {
         setAnswers(prev => ({

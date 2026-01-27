@@ -8,6 +8,7 @@ import { ThemeManager } from "./ThemeManager"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Select } from "@/components/ui/select"
 import { Plus, Eye, Save } from "lucide-react"
 
 import { createSurvey, updateSurvey, uploadImage } from "@/lib/services"
@@ -214,6 +215,51 @@ export function SurveyBuilder() {
                                     <p className="text-xs text-muted-foreground">
                                         Si se activa, el usuario solo podrá enviar la encuesta una vez desde su navegador.
                                     </p>
+                                </div>
+                            </div>
+
+                            <div className="border border-indigo-100 bg-indigo-50/50 p-4 rounded-xl space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="space-y-0.5">
+                                        <Label className="text-base font-semibold text-indigo-900">Acceso y Seguridad</Label>
+                                        <p className="text-sm text-indigo-700">Controla quién puede ver y responder esta encuesta.</p>
+                                    </div>
+                                </div>
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <Label>Tipo de Acceso</Label>
+                                        <Select
+                                            value={survey.privacy || 'public'}
+                                            onChange={(e) => setSurvey({ ...survey, privacy: e.target.value as 'public' | 'private' })}
+                                        >
+                                            <option value="public">Pública (Cualquiera con el link)</option>
+                                            <option value="private">Restringida (Solo emails autorizados)</option>
+                                        </Select>
+                                        <p className="text-xs text-muted-foreground">
+                                            {survey.privacy === 'private'
+                                                ? "Solo los usuarios en la lista podrán acceder ingresando su correo."
+                                                : "Cualquier persona con el enlace podrá responder."}
+                                        </p>
+                                    </div>
+
+                                    {survey.privacy === 'private' && (
+                                        <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
+                                            <Label>Correos Autorizados (Uno por línea)</Label>
+                                            <textarea
+                                                className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                                placeholder={`usuario1@empresa.com\nusuario2@empresa.com\n...`}
+                                                value={survey.allowedEmails?.join('\n') || ''}
+                                                onChange={(e) => {
+                                                    const text = e.target.value;
+                                                    const emails = text.split('\n').map(s => s.trim()).filter(Boolean);
+                                                    setSurvey({ ...survey, allowedEmails: emails });
+                                                }}
+                                            />
+                                            <p className="text-xs text-muted-foreground">
+                                                Total autorizados: {survey.allowedEmails?.length || 0}
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

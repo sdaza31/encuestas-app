@@ -36,6 +36,8 @@ export interface Survey {
     limitOneResponse?: boolean;
     thankYouMessage?: string;
     footerMessage?: string;
+    privacy?: 'public' | 'private';
+    allowedEmails?: string[];
     questions: Question[];
 }
 
