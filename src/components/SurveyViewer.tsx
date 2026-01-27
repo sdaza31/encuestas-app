@@ -198,7 +198,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                         {/* Render questions as a list inside the card */}
                                         <div className="">
                                             {group.questions.map((q, qIdx) => (
-                                                <div key={q.id} className="p-6 md:p-8 hover:bg-muted/5 transition-colors">
+                                                <div key={q.id} className="p-4 md:p-5 hover:bg-muted/5 transition-colors">
                                                     <div className="space-y-4">
                                                         <Label
                                                             className="text-base font-semibold block text-lg"
@@ -233,9 +233,9 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                                             )}
 
                                                             {q.type === 'radio' && (
-                                                                <div className="space-y-3 pt-2">
+                                                                <div className="flex flex-wrap gap-4 pt-2">
                                                                     {q.options?.map((opt: any) => (
-                                                                        <div key={opt.id} className={`flex items-center space-x-3 p-3 rounded-lg border transition-all ${answers[q.id] === opt.value ? 'bg-primary/5 border-primary/30' : 'hover:bg-muted/50 border-transparent bg-muted/20'}`}>
+                                                                        <div key={opt.id} className={`flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all ${answers[q.id] === opt.value ? 'bg-primary/5 border-primary/30' : 'hover:bg-muted/50 border-transparent bg-muted/20'}`}>
                                                                             <input
                                                                                 type="radio"
                                                                                 id={`${q.id}-${opt.id}`}
@@ -243,18 +243,18 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                                                                 value={opt.value}
                                                                                 checked={answers[q.id] === opt.value}
                                                                                 onChange={(e) => handleAnswerChange(q.id, e.target.value)}
-                                                                                className="h-5 w-5 border-gray-300 text-primary focus:ring-primary cursor-pointer accent-primary"
+                                                                                className="h-4 w-4 border-gray-300 text-primary focus:ring-primary cursor-pointer accent-primary"
                                                                             />
-                                                                            <label htmlFor={`${q.id}-${opt.id}`} className="flex-1 cursor-pointer font-medium">{opt.label}</label>
+                                                                            <label htmlFor={`${q.id}-${opt.id}`} className="cursor-pointer font-medium text-sm">{opt.label}</label>
                                                                         </div>
                                                                     ))}
                                                                 </div>
                                                             )}
 
                                                             {q.type === 'checkbox' && (
-                                                                <div className="space-y-3 pt-2">
+                                                                <div className="flex flex-wrap gap-4 pt-2">
                                                                     {q.options?.map((opt: any) => (
-                                                                        <div key={opt.id} className={`flex items-center space-x-3 p-3 rounded-lg border transition-all ${Array.isArray(answers[q.id]) && (answers[q.id] as string[]).includes(opt.value) ? 'bg-primary/5 border-primary/30' : 'hover:bg-muted/50 border-transparent bg-muted/20'}`}>
+                                                                        <div key={opt.id} className={`flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all ${Array.isArray(answers[q.id]) && (answers[q.id] as string[]).includes(opt.value) ? 'bg-primary/5 border-primary/30' : 'hover:bg-muted/50 border-transparent bg-muted/20'}`}>
                                                                             <input
                                                                                 type="checkbox"
                                                                                 id={`${q.id}-${opt.id}`}
@@ -268,9 +268,9 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                                                                         : current.filter(v => v !== opt.value);
                                                                                     handleAnswerChange(q.id, newVal);
                                                                                 }}
-                                                                                className="h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer accent-primary"
+                                                                                className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer accent-primary"
                                                                             />
-                                                                            <label htmlFor={`${q.id}-${opt.id}`} className="flex-1 cursor-pointer font-medium">{opt.label}</label>
+                                                                            <label htmlFor={`${q.id}-${opt.id}`} className="cursor-pointer font-medium text-sm">{opt.label}</label>
                                                                         </div>
                                                                     ))}
                                                                 </div>
