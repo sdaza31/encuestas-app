@@ -179,7 +179,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                 <div key={group.id} className="space-y-0 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                     {group.title && (
                                         <div
-                                            className="py-3 px-6 rounded-t-xl text-center mb-0 shadow-sm relative z-10 mx-2"
+                                            className="py-3 px-6 rounded-t-xl text-center mb-0 shadow-sm relative z-10"
                                             style={{
                                                 backgroundColor: survey.theme?.activeColor || '#822A88',
                                                 color: '#ffffff'
@@ -196,7 +196,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
 
                                     <div className={`bg-card rounded-xl shadow-sm border overflow-hidden ${group.title ? 'rounded-t-none border-t-0 mt-0 z-0' : ''}`}>
                                         {/* Render questions as a list inside the card */}
-                                        <div className="divide-y divide-border">
+                                        <div className="">
                                             {group.questions.map((q, qIdx) => (
                                                 <div key={q.id} className="p-6 md:p-8 hover:bg-muted/5 transition-colors">
                                                     <div className="space-y-4">
@@ -204,7 +204,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                                             className="text-base font-semibold block text-lg"
                                                             style={getTextStyle(survey.theme?.questionTitleStyle)}
                                                         >
-                                                            {q.index + 1}. {q.title} {q.required && <span className="text-destructive">*</span>}
+                                                            {q.title} {q.required && <span className="text-destructive">*</span>}
                                                         </Label>
 
                                                         <div style={getTextStyle(survey.theme?.answerStyle)}>
