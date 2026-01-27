@@ -47,17 +47,12 @@ export default function LoginPage() {
                 <div className="w-full bg-white rounded-lg shadow-2xl p-8 pt-10 pb-12 flex flex-col items-center animate-in fade-in zoom-in duration-500">
 
                     {/* Logo Area */}
-                    <div className="mb-10 flex flex-col items-center">
-                        <div className="flex items-center gap-1 mb-2">
-                            {/* 'ccm' part */}
-                            <span className="text-5xl font-bold text-[#311b4e] tracking-tighter" style={{ fontFamily: 'sans-serif' }}>ccm</span>
-                            {/* 'tec' box */}
-                            <div className="bg-[#8e24aa] text-white px-2 py-1 rounded-sm ml-1">
-                                <span className="text-4xl font-bold tracking-tighter leading-none block">tec</span>
-                            </div>
-                        </div>
-                        <p className="text-[10px] tracking-[0.2em] text-[#666] uppercase font-bold">Technology For Service</p>
-                        <p className="text-[9px] text-[#8e24aa] font-bold mt-1 tracking-wider">Innovate | Connect | Inspire</p>
+                    <div className="mb-8 flex flex-col items-center">
+                        <img
+                            src="/ccm-tec-logo.png"
+                            alt="CCM Tec Logo"
+                            className="w-48 h-auto object-contain"
+                        />
                     </div>
 
                     <form onSubmit={handleLogin} className="w-full space-y-5">
@@ -110,18 +105,6 @@ export default function LoginPage() {
 
                 {/* Footer Section */}
                 <div className="text-center text-white/50 space-y-4">
-                    {/* Simulating the bottom branding icon */}
-                    <div className="flex justify-center items-center opacity-60">
-                        <div className="relative w-8 h-8">
-                            <div className="absolute inset-0 border border-white/40 rounded-full flex items-center justify-center">
-                                <div className="w-2 h-2 bg-green-500/80 rounded-full shadow-[0_0_5px_rgba(34,197,94,0.8)]"></div>
-                            </div>
-                            <div className="absolute -top-1 -right-1 w-2 h-2 rounded-full border border-white/40"></div>
-                            <div className="absolute -bottom-2 -left-2 w-3 h-3 rounded-full border border-white/20"></div>
-                        </div>
-                        <span className="ml-3 text-sm font-medium tracking-wide">Aravel</span>
-                    </div>
-
                     <p className="text-[10px] text-white/70">
                         Copyright © 2026 developed by <span className="underline decoration-white/30 underline-offset-2 hover:text-white transition-colors cursor-default">Call Center Mall</span>
                     </p>
