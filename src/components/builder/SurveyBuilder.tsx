@@ -235,7 +235,19 @@ export function SurveyBuilder() {
                                                 placeholder="Ej. #ffffff o linear-gradient(...)"
                                                 value={survey.theme?.backgroundColor || ""}
                                                 onChange={(e) => {
-                                                    const val = e.target.value.replace(/;\s*$/, '').replace(/background(-image)?:\s*/gi, '').trim();
+                                                    let val = e.target.value;
+                                                    // Remove "background:" or "background-image:" prefixes
+                                                    val = val.replace(/background(-image)?\s*:\s*/gi, '');
+
+                                                    // Split by semicolon to handle multiple declarations (e.g. fallback color + gradient)
+                                                    const parts = val.split(';').map(p => p.trim()).filter(p => p);
+
+                                                    if (parts.length > 0) {
+                                                        // If there's a gradient, prefer it
+                                                        const gradientPart = parts.find(p => p.toLowerCase().includes('gradient'));
+                                                        val = gradientPart || parts[parts.length - 1];
+                                                    }
+
                                                     setSurvey({
                                                         ...survey,
                                                         theme: {
