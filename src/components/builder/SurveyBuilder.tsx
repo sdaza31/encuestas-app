@@ -15,6 +15,7 @@ import { SurveyViewer } from "@/components/SurveyViewer"
 import { SurveyList } from "@/components/admin/SurveyList"
 
 import { ShareModal } from "./ShareModal"
+import { RichTextEditor } from "@/components/ui/RichTextEditor"
 
 export function SurveyBuilder() {
     const [survey, setSurvey] = React.useState<Survey>({
@@ -172,28 +173,25 @@ export function SurveyBuilder() {
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="survey-desc">Descripción</Label>
-                                <Input
-                                    id="survey-desc"
+                                <RichTextEditor
                                     value={survey.description}
-                                    onChange={(e) => setSurvey({ ...survey, description: e.target.value })}
+                                    onChange={(val) => setSurvey({ ...survey, description: val })}
                                     placeholder="Descripción breve de la encuesta..."
                                 />
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="thank-you-msg">Mensaje de Agradecimiento</Label>
-                                <Input
-                                    id="thank-you-msg"
+                                <RichTextEditor
                                     value={survey.thankYouMessage || ""}
-                                    onChange={(e) => setSurvey({ ...survey, thankYouMessage: e.target.value })}
-                                    placeholder="¡Gracias! Tus respuestas han sido enviadas. (Opcional)"
+                                    onChange={(val) => setSurvey({ ...survey, thankYouMessage: val })}
+                                    placeholder="¡Gracias! Tus respuestas han sido enviadas."
                                 />
                             </div>
                             <div className="grid gap-2">
                                 <Label htmlFor="footer-msg">Mensaje Pie de Encuesta (antes de enviar)</Label>
-                                <Input
-                                    id="footer-msg"
+                                <RichTextEditor
                                     value={survey.footerMessage || ""}
-                                    onChange={(e) => setSurvey({ ...survey, footerMessage: e.target.value })}
+                                    onChange={(val) => setSurvey({ ...survey, footerMessage: val })}
                                     placeholder="Ej. Gracias por tu tiempo. Tus respuestas son anónimas."
                                 />
                             </div>

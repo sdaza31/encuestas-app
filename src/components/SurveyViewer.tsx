@@ -89,9 +89,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
             <div className="min-h-screen flex items-center justify-center p-4 bg-muted/20">
                 <div className="max-w-md w-full bg-card p-8 rounded-lg shadow-lg text-center space-y-4">
                     <h2 className="text-2xl font-bold text-green-600">¡Gracias!</h2>
-                    <p className="text-muted-foreground whitespace-pre-line">
-                        {survey.thankYouMessage || "Tus respuestas han sido registradas correctamente."}
-                    </p>
+                    <div className="text-muted-foreground whitespace-pre-line" dangerouslySetInnerHTML={{ __html: survey.thankYouMessage || "Tus respuestas han sido registradas correctamente." }} />
                 </div>
             </div>
         )
@@ -132,12 +130,11 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                         >
                             {survey.title || "Sin título"}
                         </h1>
-                        <p
+                        <div
                             className="text-muted-foreground"
                             style={getTextStyle(survey.theme?.descriptionStyle)}
-                        >
-                            {survey.description}
-                        </p>
+                            dangerouslySetInnerHTML={{ __html: survey.description }}
+                        />
                     </div>
                 </div>
 
@@ -339,9 +336,11 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                 <div className="mx-4 mt-8 pb-12 space-y-4">
                     {survey.footerMessage && (
                         <div className="bg-card p-4 rounded-xl shadow-sm border text-center">
-                            <p className="text-muted-foreground whitespace-pre-line" style={getTextStyle(survey.theme?.descriptionStyle)}>
-                                {survey.footerMessage}
-                            </p>
+                            <div
+                                className="text-muted-foreground whitespace-pre-line"
+                                style={getTextStyle(survey.theme?.descriptionStyle)}
+                                dangerouslySetInnerHTML={{ __html: survey.footerMessage }}
+                            />
                         </div>
                     )}
 
