@@ -142,150 +142,183 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                 </div>
 
                 {/* Questions List */}
-                <div className="space-y-4 mx-4">
-                    {survey.questions.map((q, idx) => {
-                        if (q.type === 'section') {
+                <div className="space-y-8 mx-4">
+                    {(() => {
+                        // Grouping logic inside render to keep it simple and reactive
+                        const groups: { id: string; title: string | null; questions: any[] }[] = [];
+                        let currentGroup: { id: string; title: string | null; questions: any[] } = {
+                            id: 'start',
+                            title: null,
+                            questions: []
+                        };
+
+                        let globalQuestionIndex = 0;
+
+                        survey.questions.forEach((q) => {
+                            if (q.type === 'section') {
+                                if (currentGroup.questions.length > 0 || currentGroup.title) {
+                                    groups.push(currentGroup);
+                                }
+                                currentGroup = {
+                                    id: q.id,
+                                    title: q.title,
+                                    questions: []
+                                };
+                            } else {
+                                currentGroup.questions.push({ ...q, index: globalQuestionIndex++ });
+                            }
+                        });
+                        groups.push(currentGroup);
+
+                        return groups.map((group) => {
+                            if (group.questions.length === 0 && !group.title) return null;
+
                             return (
-                                <div key={q.id} className="pt-6 pb-2">
-                                    <h2
-                                        className="text-xl font-bold border-b pb-2"
-                                        style={{
-                                            color: survey.theme?.activeColor || 'inherit',
-                                            ...getTextStyle(survey.theme?.questionTitleStyle) // Applying question style to section title for consistency, or standard
-                                        }}
-                                    >
-                                        {/* Allow Markdown-like bold if needed, or just plain text */}
-                                        {q.title}
-                                    </h2>
+                                <div key={group.id} className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                    {group.title && (
+                                        <div className="pt-2 pb-2">
+                                            <h2
+                                                className="text-xl font-bold"
+                                                style={{
+                                                    color: survey.theme?.activeColor || 'inherit',
+                                                    ...getTextStyle(survey.theme?.questionTitleStyle)
+                                                }}
+                                            >
+                                                {group.title}
+                                            </h2>
+                                        </div>
+                                    )}
+
+                                    <div className="space-y-4">
+                                        {group.questions.map((q) => (
+                                            <div key={q.id} className="bg-card p-6 rounded-xl shadow-sm border space-y-4 transition-all hover:shadow-md">
+                                                <Label
+                                                    className="text-base font-semibold block"
+                                                    style={getTextStyle(survey.theme?.questionTitleStyle)}
+                                                >
+                                                    {q.index + 1}. {q.title} {q.required && <span className="text-destructive">*</span>}
+                                                </Label>
+
+                                                <div style={getTextStyle(survey.theme?.answerStyle)}>
+
+                                                    {q.type === 'text' && (
+                                                        <Input
+                                                            type="text"
+                                                            placeholder={q.validation?.inputType === 'number' ? "Ingresa un número..." : "Tu respuesta..."}
+                                                            value={answers[q.id] || ''}
+                                                            onChange={(e) => {
+                                                                let val = e.target.value;
+                                                                const type = q.validation?.inputType || 'any';
+                                                                const maxLen = q.validation?.maxLength;
+
+                                                                if (type === 'number') val = val.replace(/[^0-9]/g, '');
+                                                                else if (type === 'text') val = val.replace(/[0-9]/g, '');
+
+                                                                if (maxLen && val.length > maxLen) val = val.slice(0, maxLen);
+
+                                                                handleAnswerChange(q.id, val);
+                                                            }}
+                                                            className="bg-background/50"
+                                                        />
+                                                    )}
+
+                                                    {q.type === 'radio' && (
+                                                        <div className="space-y-2">
+                                                            {q.options?.map((opt: any) => (
+                                                                <div key={opt.id} className={`flex items-center space-x-2 p-2 rounded-md hover:bg-muted/50 transition-colors ${answers[q.id] === opt.value ? 'bg-muted/50' : ''}`}>
+                                                                    <input
+                                                                        type="radio"
+                                                                        id={`${q.id}-${opt.id}`}
+                                                                        name={q.id}
+                                                                        value={opt.value}
+                                                                        checked={answers[q.id] === opt.value}
+                                                                        onChange={(e) => handleAnswerChange(q.id, e.target.value)}
+                                                                        className="h-4 w-4 border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                                                                    />
+                                                                    <label htmlFor={`${q.id}-${opt.id}`} className="flex-1 cursor-pointer">{opt.label}</label>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+
+                                                    {q.type === 'checkbox' && (
+                                                        <div className="space-y-2">
+                                                            {q.options?.map((opt: any) => (
+                                                                <div key={opt.id} className={`flex items-center space-x-2 p-2 rounded-md hover:bg-muted/50 transition-colors ${Array.isArray(answers[q.id]) && (answers[q.id] as string[]).includes(opt.value) ? 'bg-muted/50' : ''}`}>
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        id={`${q.id}-${opt.id}`}
+                                                                        name={q.id}
+                                                                        value={opt.value}
+                                                                        checked={Array.isArray(answers[q.id]) && (answers[q.id] as string[]).includes(opt.value)}
+                                                                        onChange={(e) => {
+                                                                            const current = (answers[q.id] as string[]) || [];
+                                                                            const newVal = e.target.checked
+                                                                                ? [...current, opt.value]
+                                                                                : current.filter(v => v !== opt.value);
+                                                                            handleAnswerChange(q.id, newVal);
+                                                                        }}
+                                                                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                                                                    />
+                                                                    <label htmlFor={`${q.id}-${opt.id}`} className="flex-1 cursor-pointer">{opt.label}</label>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+
+                                                    {q.type === 'select' && (
+                                                        <Select
+                                                            value={answers[q.id] || ''}
+                                                            onChange={(e) => handleAnswerChange(q.id, e.target.value)}
+                                                        >
+                                                            <option value="">Selecciona una opción</option>
+                                                            {q.options?.map((opt: any) => (
+                                                                <option key={opt.id} value={opt.value}>{opt.label}</option>
+                                                            ))}
+                                                        </Select>
+                                                    )}
+
+                                                    {q.type === 'date' && (
+                                                        <Input
+                                                            type="date"
+                                                            className="w-full sm:w-auto bg-background/50"
+                                                            value={answers[q.id] || ''}
+                                                            onChange={(e) => handleAnswerChange(q.id, e.target.value)}
+                                                        />
+                                                    )}
+
+                                                    {q.type === 'rating-stars' && (
+                                                        <div className="flex justify-center py-2">
+                                                            <StarRating
+                                                                labels={{ min: 'Muy insatisfecho', max: 'Muy satisfecho' }}
+                                                                value={(answers[q.id] as number) || 0}
+                                                                onChange={(val) => handleAnswerChange(q.id, val)}
+                                                                activeColor={survey.theme?.activeColor}
+                                                                iconStyle={q.iconStyle}
+                                                                max={10}
+                                                            />
+                                                        </div>
+                                                    )}
+
+                                                    {q.type === 'rating-scale' && (
+                                                        <div className="py-2">
+                                                            <NumericScale
+                                                                max={10}
+                                                                labels={{ min: 'Muy insatisfecho', max: 'Muy satisfecho' }}
+                                                                value={(answers[q.id] as number) || 0}
+                                                                onChange={(val) => handleAnswerChange(q.id, val)}
+                                                                activeColor={survey.theme?.activeColor}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             );
-                        }
-
-                        return (
-                            <div key={q.id} className="bg-card p-6 rounded-xl shadow-sm border space-y-4 transition-all hover:shadow-md">
-                                <Label
-                                    className="text-base font-semibold block"
-                                    style={getTextStyle(survey.theme?.questionTitleStyle)}
-                                >
-                                    {idx + 1}. {q.title} {q.required && <span className="text-destructive">*</span>}
-                                </Label>
-
-                                <div style={getTextStyle(survey.theme?.answerStyle)}>
-
-                                    {q.type === 'text' && (
-                                        <Input
-                                            type="text"
-                                            placeholder={q.validation?.inputType === 'number' ? "Ingresa un número..." : "Tu respuesta..."}
-                                            value={answers[q.id] || ''}
-                                            onChange={(e) => {
-                                                let val = e.target.value;
-                                                const type = q.validation?.inputType || 'any';
-                                                const maxLen = q.validation?.maxLength;
-
-                                                if (type === 'number') val = val.replace(/[^0-9]/g, '');
-                                                else if (type === 'text') val = val.replace(/[0-9]/g, '');
-
-                                                if (maxLen && val.length > maxLen) val = val.slice(0, maxLen);
-
-                                                handleAnswerChange(q.id, val);
-                                            }}
-                                            className="bg-background/50"
-                                        />
-                                    )}
-
-                                    {q.type === 'radio' && (
-                                        <div className="space-y-2">
-                                            {q.options?.map(opt => (
-                                                <div key={opt.id} className={`flex items-center space-x-2 p-2 rounded-md hover:bg-muted/50 transition-colors ${answers[q.id] === opt.value ? 'bg-muted/50' : ''}`}>
-                                                    <input
-                                                        type="radio"
-                                                        id={`${q.id}-${opt.id}`}
-                                                        name={q.id}
-                                                        value={opt.value}
-                                                        checked={answers[q.id] === opt.value}
-                                                        onChange={(e) => handleAnswerChange(q.id, e.target.value)}
-                                                        className="h-4 w-4 border-gray-300 text-primary focus:ring-primary cursor-pointer"
-                                                    />
-                                                    <label htmlFor={`${q.id}-${opt.id}`} className="flex-1 cursor-pointer">{opt.label}</label>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-
-                                    {q.type === 'checkbox' && (
-                                        <div className="space-y-2">
-                                            {q.options?.map(opt => (
-                                                <div key={opt.id} className={`flex items-center space-x-2 p-2 rounded-md hover:bg-muted/50 transition-colors ${Array.isArray(answers[q.id]) && (answers[q.id] as string[]).includes(opt.value) ? 'bg-muted/50' : ''}`}>
-                                                    <input
-                                                        type="checkbox"
-                                                        id={`${q.id}-${opt.id}`}
-                                                        name={q.id}
-                                                        value={opt.value}
-                                                        checked={Array.isArray(answers[q.id]) && (answers[q.id] as string[]).includes(opt.value)}
-                                                        onChange={(e) => {
-                                                            const current = (answers[q.id] as string[]) || [];
-                                                            const newVal = e.target.checked
-                                                                ? [...current, opt.value]
-                                                                : current.filter(v => v !== opt.value);
-                                                            handleAnswerChange(q.id, newVal);
-                                                        }}
-                                                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
-                                                    />
-                                                    <label htmlFor={`${q.id}-${opt.id}`} className="flex-1 cursor-pointer">{opt.label}</label>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-
-                                    {q.type === 'select' && (
-                                        <Select
-                                            value={answers[q.id] || ''}
-                                            onChange={(e) => handleAnswerChange(q.id, e.target.value)}
-                                        >
-                                            <option value="">Selecciona una opción</option>
-                                            {q.options?.map(opt => (
-                                                <option key={opt.id} value={opt.value}>{opt.label}</option>
-                                            ))}
-                                        </Select>
-                                    )}
-
-                                    {q.type === 'date' && (
-                                        <Input
-                                            type="date"
-                                            className="w-full sm:w-auto bg-background/50"
-                                            value={answers[q.id] || ''}
-                                            onChange={(e) => handleAnswerChange(q.id, e.target.value)}
-                                        />
-                                    )}
-
-                                    {q.type === 'rating-stars' && (
-                                        <div className="flex justify-center py-2">
-                                            <StarRating
-                                                labels={{ min: 'Muy insatisfecho', max: 'Muy satisfecho' }}
-                                                value={(answers[q.id] as number) || 0}
-                                                onChange={(val) => handleAnswerChange(q.id, val)}
-                                                activeColor={survey.theme?.activeColor}
-                                                iconStyle={q.iconStyle}
-                                                max={10}
-                                            />
-                                        </div>
-                                    )}
-
-                                    {q.type === 'rating-scale' && (
-                                        <div className="py-2">
-                                            <NumericScale
-                                                max={10}
-                                                labels={{ min: 'Muy insatisfecho', max: 'Muy satisfecho' }}
-                                                value={(answers[q.id] as number) || 0}
-                                                onChange={(val) => handleAnswerChange(q.id, val)}
-                                                activeColor={survey.theme?.activeColor}
-                                            />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        );
-                    })}
+                        });
+                    })()}
                 </div>
 
                 <div className="mx-4 mt-8 pb-12 space-y-4">
