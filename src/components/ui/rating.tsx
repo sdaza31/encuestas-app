@@ -64,7 +64,7 @@ export function StarRating({ value = 0, onChange, max = 5, labels, activeColor, 
                     <span>{labels.max}</span>
                 </div>
             )}
-            <div className="flex gap-1">
+            <div className="flex gap-6">
                 {Array.from({ length: max }).map((_, i) => {
                     const ratingValue = i + 1
                     const isHoveredOrFilled = (hoverValue !== null ? hoverValue : value) >= ratingValue
