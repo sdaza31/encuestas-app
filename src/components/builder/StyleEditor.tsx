@@ -15,6 +15,7 @@ interface StyleEditorProps {
 const FONT_FAMILIES = [
     { label: 'Predeterminada', value: 'inherit' },
     { label: 'Sans Serif (Inter)', value: 'var(--font-sans), system-ui, sans-serif' },
+    { label: 'Montserrat', value: 'var(--font-montserrat), sans-serif' },
     { label: 'Serif (Playfair)', value: 'Georgia, Cambria, "Times New Roman", Times, serif' },
     { label: 'Monospace', value: 'Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace' },
     { label: 'Cursive', value: '"Comic Sans MS", "Comic Sans", cursive' },
