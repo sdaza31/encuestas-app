@@ -21,16 +21,8 @@ export default function LoginPage() {
             await signInWithEmailAndPassword(auth, email, password)
             router.push("/admin/builder")
         } catch (err) {
+            console.error(err)
             setError("Error al iniciar sesión. Verifica tus credenciales.")
-            console.error("Login error:", err)
-            // @ts-ignore
-            console.log("Projects Config:", {
-                projectId: auth.app.options.projectId,
-                apiKey: auth.app.options.apiKey,
-                error_code: (err as any).code,
-                error_message: (err as any).message
-            })
-            setError(`Error: ${(err as any).code} - ${(err as any).message}`)
         }
     }
 
