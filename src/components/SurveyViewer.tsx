@@ -98,7 +98,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
     return (
         <div
             className="min-h-screen w-full py-8 transition-colors duration-300"
-            style={{ backgroundColor: survey.theme?.backgroundColor || 'transparent' }}
+            style={{ background: survey.theme?.backgroundColor || 'transparent' }}
         >
             <div className="max-w-2xl mx-auto">
                 {isPreview && onBack && (
