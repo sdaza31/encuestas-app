@@ -22,7 +22,15 @@ export default function LoginPage() {
             router.push("/admin/builder")
         } catch (err) {
             setError("Error al iniciar sesión. Verifica tus credenciales.")
-            console.error(err)
+            console.error("Login error:", err)
+            // @ts-ignore
+            console.log("Projects Config:", {
+                projectId: auth.app.options.projectId,
+                apiKey: auth.app.options.apiKey,
+                error_code: (err as any).code,
+                error_message: (err as any).message
+            })
+            setError(`Error: ${(err as any).code} - ${(err as any).message}`)
         }
     }
 
