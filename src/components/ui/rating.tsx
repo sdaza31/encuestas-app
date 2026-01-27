@@ -114,9 +114,9 @@ export function StarRating({ value = 0, onChange, max = 5, labels, activeColor, 
 export function NumericScale({ value, onChange, max = 10, labels, activeColor }: RatingProps) {
     const [hoverValue, setHoverValue] = React.useState<number | null>(null)
 
-    // Corporate colors gradient: Dark Blue -> Purple -> Light Purple
-    // #161138 -> #822A88 -> #A970AF
-    const gradientBackground = `linear-gradient(to right, #161138, #822A88, #A970AF)`;
+    // Corporate colors gradient: Light Lilac -> Corporate Purple (Lighter by default)
+    // #E6CEF2 (Very light purple) -> #A970AF (Light purple)
+    const gradientBackground = `linear-gradient(to right, #E6CEF2, #CDA4D4, #A970AF)`;
 
     return (
         <div className="space-y-2 w-full">
@@ -135,6 +135,9 @@ export function NumericScale({ value, onChange, max = 10, labels, activeColor }:
                     const isSelected = value === ratingValue
                     const isHovered = hoverValue === ratingValue
 
+                    // On select/hover, use the strong corporate purple (#822A88)
+                    const activeColor = '#822A88';
+
                     return (
                         <button
                             key={i}
@@ -144,11 +147,12 @@ export function NumericScale({ value, onChange, max = 10, labels, activeColor }:
                             onMouseLeave={() => setHoverValue(null)}
                             className={cn(
                                 "flex-1 h-12 flex items-center justify-center text-sm sm:text-lg font-medium transition-all focus:outline-none relative z-10",
-                                isSelected ? "font-bold scale-110 shadow-lg z-20 ring-2 ring-white" : "text-white/70 hover:text-white hover:bg-white/10"
+                                isSelected ? "font-bold scale-110 shadow-lg z-20 ring-2 ring-white" : "text-black/60 hover:text-white hover:bg-white/10"
                             )}
                             style={{
-                                color: 'white',
-                                textShadow: '0 1px 2px rgba(0,0,0,0.3)'
+                                backgroundColor: isSelected || isHovered ? activeColor : 'transparent',
+                                color: isSelected || isHovered ? 'white' : undefined,
+                                textShadow: isSelected || isHovered ? '0 1px 2px rgba(0,0,0,0.3)' : 'none'
                             }}
                         >
                             <span className="relative z-10">{ratingValue}</span>
