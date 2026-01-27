@@ -233,7 +233,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                                             )}
 
                                                             {q.type === 'radio' && (
-                                                                <div className="flex flex-wrap gap-4 pt-2">
+                                                                <div className={`flex flex-wrap gap-4 pt-2 ${survey.theme?.answerStyle?.textAlign === 'center' ? 'justify-center' : survey.theme?.answerStyle?.textAlign === 'right' ? 'justify-end' : 'justify-start'}`}>
                                                                     {q.options?.map((opt: any) => (
                                                                         <div key={opt.id} className={`flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all ${answers[q.id] === opt.value ? 'bg-primary/5 border-primary/30' : 'hover:bg-muted/50 border-transparent bg-muted/20'}`}>
                                                                             <input
@@ -252,7 +252,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                                             )}
 
                                                             {q.type === 'checkbox' && (
-                                                                <div className="flex flex-wrap gap-4 pt-2">
+                                                                <div className={`flex flex-wrap gap-4 pt-2 ${survey.theme?.answerStyle?.textAlign === 'center' ? 'justify-center' : survey.theme?.answerStyle?.textAlign === 'right' ? 'justify-end' : 'justify-start'}`}>
                                                                     {q.options?.map((opt: any) => (
                                                                         <div key={opt.id} className={`flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all ${Array.isArray(answers[q.id]) && (answers[q.id] as string[]).includes(opt.value) ? 'bg-primary/5 border-primary/30' : 'hover:bg-muted/50 border-transparent bg-muted/20'}`}>
                                                                             <input
