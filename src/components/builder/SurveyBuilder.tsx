@@ -234,13 +234,16 @@ export function SurveyBuilder() {
                                                 id="bg-color"
                                                 placeholder="Ej. #ffffff o linear-gradient(...)"
                                                 value={survey.theme?.backgroundColor || ""}
-                                                onChange={(e) => setSurvey({
-                                                    ...survey,
-                                                    theme: {
-                                                        ...(survey.theme || {}),
-                                                        backgroundColor: e.target.value
-                                                    }
-                                                })}
+                                                onChange={(e) => {
+                                                    const val = e.target.value.replace(/;\s*$/, '').replace(/background(-image)?:\s*/gi, '').trim();
+                                                    setSurvey({
+                                                        ...survey,
+                                                        theme: {
+                                                            ...(survey.theme || {}),
+                                                            backgroundColor: val
+                                                        }
+                                                    })
+                                                }}
                                                 className="font-mono text-xs"
                                             />
                                         </div>
@@ -280,14 +283,17 @@ export function SurveyBuilder() {
                                         <Input
                                             placeholder="#822A88"
                                             value={survey.theme?.sectionBackground || ""}
-                                            onChange={(e) => setSurvey({
-                                                ...survey,
-                                                theme: {
-                                                    ...(survey.theme || {}),
-                                                    backgroundColor: survey.theme?.backgroundColor || "#ffffff",
-                                                    sectionBackground: e.target.value
-                                                }
-                                            })}
+                                            onChange={(e) => {
+                                                const val = e.target.value.replace(/;\s*$/, '').replace(/background(-image)?:\s*/gi, '').trim();
+                                                setSurvey({
+                                                    ...survey,
+                                                    theme: {
+                                                        ...(survey.theme || {}),
+                                                        backgroundColor: survey.theme?.backgroundColor || "#ffffff",
+                                                        sectionBackground: val
+                                                    }
+                                                })
+                                            }}
                                             className="flex-1 font-mono"
                                         />
                                     </div>
