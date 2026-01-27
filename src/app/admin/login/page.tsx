@@ -29,20 +29,12 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen w-full relative flex items-center justify-center overflow-hidden bg-[#1a0b2e]">
-            {/* Background Network Effect - Simulated */}
-            <div className="absolute inset-0 z-0">
-                {/* Radial Gradient Base */}
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#4a148c] via-[#1a0b2e] to-[#000000] opacity-80"></div>
-
-                {/* Dot Grid Pattern to simulate network nodes */}
-                <div className="absolute inset-0 opacity-20"
-                    style={{
-                        backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)',
-                        backgroundSize: '30px 30px'
-                    }}>
-                </div>
-            </div>
+        <div
+            className="min-h-screen w-full relative flex items-center justify-center overflow-hidden"
+            style={{
+                background: 'linear-gradient(160deg, rgba(130, 42, 136, 1) 0%, rgba(242, 160, 250, 1) 57%)'
+            }}
+        >
 
             <div className="z-10 w-full max-w-[400px] flex flex-col items-center gap-8 p-4">
                 {/* Main Card */}
