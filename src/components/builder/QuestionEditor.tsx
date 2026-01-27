@@ -66,18 +66,21 @@ export function QuestionEditor({ question, onUpdate, onDelete }: QuestionEditorP
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="grid gap-2">
-                    <Label htmlFor={`q-title-${question.id}`}>Título de la pregunta</Label>
+                    <Label htmlFor={`q-title-${question.id}`}>
+                        {question.type === 'section' ? 'Título de la sección' : 'Título de la pregunta'}
+                    </Label>
                     <Input
                         id={`q-title-${question.id}`}
                         value={question.title}
                         onChange={(e) => onUpdate({ ...question, title: e.target.value })}
-                        placeholder="¿Qué te gustaría preguntar?"
+                        placeholder={question.type === 'section' ? "Nombre de la categoría o sección" : "¿Qué te gustaría preguntar?"}
+                        className={question.type === 'section' ? "font-bold text-primary border-primary/50" : ""}
                     />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                     <div className="grid gap-2">
-                        <Label htmlFor={`q-type-${question.id}`}>Tipo de respuesta</Label>
+                        <Label htmlFor={`q-type-${question.id}`}>Tipo de elemento</Label>
                         <Select
                             id={`q-type-${question.id}`}
                             value={question.type}
@@ -90,20 +93,23 @@ export function QuestionEditor({ question, onUpdate, onDelete }: QuestionEditorP
                             <option value="date">Fecha</option>
                             <option value="rating-stars">Rating (Estrellas)</option>
                             <option value="rating-scale">Escala Numérica (1-5)</option>
+                            <option value="section">📌 Sección / Título</option>
                         </Select>
                     </div>
 
-                    <div className="flex items-end pb-2">
-                        <label className="flex items-center space-x-2 text-sm font-medium cursor-pointer">
-                            <input
-                                type="checkbox"
-                                checked={question.required}
-                                onChange={(e) => onUpdate({ ...question, required: e.target.checked })}
-                                className="form-checkbox h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary"
-                            />
-                            <span>Obligatorio</span>
-                        </label>
-                    </div>
+                    {question.type !== 'section' && (
+                        <div className="flex items-end pb-2">
+                            <label className="flex items-center space-x-2 text-sm font-medium cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    checked={question.required}
+                                    onChange={(e) => onUpdate({ ...question, required: e.target.checked })}
+                                    className="form-checkbox h-4 w-4 text-primary rounded border-gray-300 focus:ring-primary"
+                                />
+                                <span>Obligatorio</span>
+                            </label>
+                        </div>
+                    )}
                 </div>
 
                 {/* Validation Editor for Text Questions */}
