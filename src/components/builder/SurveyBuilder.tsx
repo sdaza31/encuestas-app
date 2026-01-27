@@ -14,6 +14,8 @@ import { createSurvey, updateSurvey, uploadImage } from "@/lib/services"
 import { SurveyViewer } from "@/components/SurveyViewer"
 import { SurveyList } from "@/components/admin/SurveyList"
 
+import { ShareModal } from "./ShareModal"
+
 export function SurveyBuilder() {
     const [survey, setSurvey] = React.useState<Survey>({
         id: crypto.randomUUID(),
@@ -25,7 +27,7 @@ export function SurveyBuilder() {
     const [isPreview, setIsPreview] = React.useState(false)
     const [isSaving, setIsSaving] = React.useState(false)
     const [isUploading, setIsUploading] = React.useState(false)
-    const [shareUrl, setShareUrl] = React.useState<string | null>(null)
+    const [isShareModalOpen, setIsShareModalOpen] = React.useState(false)
     const [isUpdate, setIsUpdate] = React.useState(false)
 
     const addQuestion = () => {
@@ -58,16 +60,9 @@ export function SurveyBuilder() {
 
     const [lastSave, setLastSave] = React.useState(0)
 
-    const getShareUrl = (id: string) => {
-        const basePath = window.location.pathname.includes('/encuestas-app') ? '/encuestas-app' : '';
-        return `${window.location.origin}${basePath}/survey?id=${id}`;
-    }
-
     const handleShare = () => {
         if (!survey.id) return;
-        const url = getShareUrl(survey.id);
-        setShareUrl(url);
-        navigator.clipboard.writeText(url).then(() => alert("Link copiado al portapapeles!"));
+        setIsShareModalOpen(true);
     }
 
     const handleSave = async () => {
@@ -82,8 +77,6 @@ export function SurveyBuilder() {
                 setIsUpdate(true);
             }
 
-            const url = getShareUrl(id);
-            setShareUrl(url);
             setLastSave(Date.now());
         } catch (error: any) {
             console.error("Error saving survey:", error);
@@ -102,7 +95,6 @@ export function SurveyBuilder() {
     const handleSelectSurvey = (selectedSurvey: Survey) => {
         if (confirm("Si cambias de encuesta sin guardar, perderás los cambios actuales. ¿Continuar?")) {
             setSurvey(selectedSurvey);
-            setShareUrl(null);
             setIsUpdate(true);
         }
     };
@@ -115,7 +107,6 @@ export function SurveyBuilder() {
                 description: "",
                 questions: []
             });
-            setShareUrl(null);
             setIsUpdate(false);
         }
     }
@@ -132,6 +123,11 @@ export function SurveyBuilder() {
 
     return (
         <div className="max-w-7xl mx-auto py-6 space-y-6">
+            <ShareModal
+                isOpen={isShareModalOpen}
+                onClose={() => setIsShareModalOpen(false)}
+                surveyId={survey.id}
+            />
             <div className="flex justify-between items-center px-4">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Panel de Administración</h1>
@@ -140,7 +136,7 @@ export function SurveyBuilder() {
                     <Button variant="outline" onClick={handleNewSurvey}>
                         <Plus className="mr-2 h-4 w-4" /> Nueva
                     </Button>
-                    <Button variant="outline" onClick={handleShare} title="Ver link para compartir">
+                    <Button variant="outline" onClick={handleShare} title="Ver link para compartir" disabled={!isUpdate && !survey.id}>
                         <span className="mr-2">🔗</span> Compartir
                     </Button>
                     <Button variant="secondary" onClick={() => setIsPreview(true)}>
@@ -151,18 +147,6 @@ export function SurveyBuilder() {
                     </Button>
                 </div>
             </div>
-
-            {
-                shareUrl && (
-                    <div className="mx-4 p-4 bg-green-100 border border-green-300 text-green-800 rounded-md flex justify-between items-center">
-                        <div>
-                            <p className="font-bold">¡Encuesta Guardada!</p>
-                            <p className="text-sm break-all">Link: <a href={shareUrl} target="_blank" className="underline">{shareUrl}</a></p>
-                        </div>
-                        <Button variant="ghost" size="sm" onClick={() => setShareUrl(null)}>X</Button>
-                    </div>
-                )
-            }
 
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 px-4 items-start">
                 <div className="hidden md:block col-span-1 bg-card rounded-xl border shadow-sm p-4 sticky top-4">
