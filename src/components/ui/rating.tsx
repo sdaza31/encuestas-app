@@ -59,7 +59,7 @@ export function StarRating({ value = 0, onChange, max = 5, labels, activeColor, 
     return (
         <div className="space-y-2">
             {labels && (
-                <div className="flex justify-between text-sm text-muted-foreground w-full max-w-[200px]">
+                <div className="flex justify-between text-sm text-muted-foreground w-full px-1">
                     <span>{labels.min}</span>
                     <span>{labels.max}</span>
                 </div>
@@ -68,12 +68,6 @@ export function StarRating({ value = 0, onChange, max = 5, labels, activeColor, 
                 {Array.from({ length: max }).map((_, i) => {
                     const ratingValue = i + 1
                     const isHoveredOrFilled = (hoverValue !== null ? hoverValue : value) >= ratingValue
-
-                    // For dynamic icons (smile/user), we want the icon to reflect the CURRENT rating being hovered/selected, 
-                    // NOT the individual star's position necessarily? 
-                    // Actually standard behavior: 1st star always sad, 5th star always happy. 
-                    // BUT in the user image, it looks like a scale where each step has its own static identity.
-                    // Let's implement static identity per step (1=Red/Crossed, 5=Green/Waving).
 
                     const Icon = getIcon(i, ratingValue);
 
@@ -85,16 +79,14 @@ export function StarRating({ value = 0, onChange, max = 5, labels, activeColor, 
                         if (activeColor) {
                             style = { color: activeColor };
                         } else if (iconStyle === 'user' || iconStyle === 'smile') {
-                            // Force dynamic colors for these styles if no custom color
                             const dynColor = getDynamicColor(i);
                             if (dynColor.startsWith("text-")) colorClass = dynColor;
                             else style = { color: dynColor };
                         } else {
-                            // Default yellow for stars/hearts
                             colorClass = iconStyle === 'heart' ? "text-red-500" : "text-yellow-400";
                         }
                     } else {
-                        colorClass = "text-gray-200"; // Empty state
+                        colorClass = "text-gray-200";
                     }
 
                     return (
@@ -120,20 +112,11 @@ export function StarRating({ value = 0, onChange, max = 5, labels, activeColor, 
 }
 
 export function NumericScale({ value, onChange, max = 10, labels, activeColor }: RatingProps) {
-    // Function to calculate color based on value (Red -> Yellow -> Green)
-    const getColor = (index: number, total: number) => {
-        if (activeColor) return activeColor;
-
-        // Map index (0 to total-1) to Hue (0 to 120)
-        // 0 -> Red (0)
-        // Middle -> Yellow (60)
-        // End -> Green (120)
-        const hue = (index / (total - 1)) * 120
-        return `hsl(${hue}, 80%, 60%)`
-    }
-
-    // Hover state for scale
     const [hoverValue, setHoverValue] = React.useState<number | null>(null)
+
+    // Corporate colors gradient: Dark Blue -> Purple -> Light Purple
+    // #161138 -> #822A88 -> #A970AF
+    const gradientBackground = `linear-gradient(to right, #161138, #822A88, #A970AF)`;
 
     return (
         <div className="space-y-2 w-full">
@@ -143,13 +126,14 @@ export function NumericScale({ value, onChange, max = 10, labels, activeColor }:
                     <span>{labels.max}</span>
                 </div>
             )}
-            <div className="flex w-full rounded-md overflow-hidden border bg-background">
+            <div
+                className="flex w-full rounded-md overflow-hidden border bg-background relative"
+                style={{ background: gradientBackground }}
+            >
                 {Array.from({ length: max }).map((_, i) => {
                     const ratingValue = i + 1
                     const isSelected = value === ratingValue
                     const isHovered = hoverValue === ratingValue
-
-                    const baseColor = getColor(i, max)
 
                     return (
                         <button
@@ -159,25 +143,15 @@ export function NumericScale({ value, onChange, max = 10, labels, activeColor }:
                             onMouseEnter={() => setHoverValue(ratingValue)}
                             onMouseLeave={() => setHoverValue(null)}
                             className={cn(
-                                "flex-1 h-12 flex items-center justify-center text-sm sm:text-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary relative",
-                                isSelected ? "ring-2 ring-primary z-20 font-bold scale-110 shadow-lg" : "",
-                                !isSelected && isHovered ? "z-10 brightness-90" : ""
+                                "flex-1 h-12 flex items-center justify-center text-sm sm:text-lg font-medium transition-all focus:outline-none relative z-10",
+                                isSelected ? "font-bold scale-110 shadow-lg z-20 ring-2 ring-white" : "text-white/70 hover:text-white hover:bg-white/10"
                             )}
                             style={{
-                                backgroundColor: isSelected || isHovered ? baseColor : 'transparent',
-                                color: isSelected || isHovered ? 'white' : 'inherit',
-                                borderRight: i < max - 1 ? '1px solid hsl(var(--border))' : 'none'
+                                color: 'white',
+                                textShadow: '0 1px 2px rgba(0,0,0,0.3)'
                             }}
                         >
                             <span className="relative z-10">{ratingValue}</span>
-                            {/* Background gradient hint always visible slightly? Or just plain buttons that light up? */}
-                            {/* User requested "color range from red yellow and green", implying the scale itself might be colored or just the selection. */}
-                            {/* "la escala numerica siempre esta verde, debe cambiar segun el usuario marque la opcion" -> Only the selection changes color? Or the whole bar is a gradient? */}
-                            {/* Let's try coloring the background lightly to show the scale, and intensely on selection. */}
-                            <div
-                                className="absolute inset-0 opacity-20 pointer-events-none"
-                                style={{ backgroundColor: baseColor }}
-                            />
                         </button>
                     )
                 })}

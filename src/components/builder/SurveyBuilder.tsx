@@ -265,7 +265,7 @@ export function SurveyBuilder() {
                                             id="active-color"
                                             type="color"
                                             className="w-12 h-10 p-1 cursor-pointer"
-                                            value={survey.theme?.activeColor || "#eab308"}
+                                            value={survey.theme?.activeColor || "#822A88"}
                                             onChange={(e) => setSurvey({
                                                 ...survey,
                                                 theme: {
@@ -276,7 +276,7 @@ export function SurveyBuilder() {
                                             })}
                                         />
                                         <Input
-                                            placeholder="#EAB308"
+                                            placeholder="#822A88"
                                             value={survey.theme?.activeColor || ""}
                                             onChange={(e) => setSurvey({
                                                 ...survey,
