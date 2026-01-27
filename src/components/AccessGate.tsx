@@ -3,7 +3,8 @@
 import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Lock } from "lucide-react"
+import Image from "next/image"
+import ccmLogo from "@/assets/ccm-tec-logo.png"
 
 interface AccessGateProps {
     allowedEmails?: string[];
@@ -47,13 +48,20 @@ export function AccessGate({ allowedEmails, onAccessGranted, surveyTitle }: Acce
                 {/* Main Card */}
                 <div className="w-full bg-white rounded-lg shadow-2xl p-8 pt-10 pb-12 flex flex-col items-center animate-in fade-in zoom-in duration-500">
 
-                    <div className="mb-6 flex flex-col items-center text-center space-y-2">
-                        <div className="mx-auto w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-indigo-600 mb-2">
-                            <Lock className="w-6 h-6" />
-                        </div>
-                        <h2 className="text-2xl font-bold text-gray-900">Acceso Restringido</h2>
-                        {surveyTitle && <p className="text-gray-500 font-medium px-4">{surveyTitle}</p>}
-                        <p className="text-xs text-gray-400 max-w-[280px]">
+                    {/* Logo Area */}
+                    <div className="mb-8 flex flex-col items-center text-center">
+                        <Image
+                            src={ccmLogo}
+                            alt="CCM Tec Logo"
+                            className="w-48 h-auto object-contain mb-6"
+                            priority
+                        />
+                        <h2 className="text-xl font-bold text-gray-900">Acceso Restringido</h2>
+                        {surveyTitle && <p className="text-sm text-gray-500 font-medium mt-1">{surveyTitle}</p>}
+                    </div>
+
+                    <div className="mb-4 text-center">
+                        <p className="text-xs text-gray-400 max-w-[280px] mx-auto">
                             Esta encuesta es privada. Ingresa tu correo para verificar tu acceso.
                         </p>
                     </div>
@@ -87,7 +95,7 @@ export function AccessGate({ allowedEmails, onAccessGranted, surveyTitle }: Acce
                 {/* Footer Section */}
                 <div className="text-center text-white/50 space-y-4">
                     <p className="text-[10px] text-white/70">
-                        Si crees que deberías tener acceso, contacta al administrador.
+                        Copyright © 2026 developed by <span className="underline decoration-white/30 underline-offset-2 hover:text-white transition-colors cursor-default">Call Center Mall</span>
                     </p>
                 </div>
             </div>
