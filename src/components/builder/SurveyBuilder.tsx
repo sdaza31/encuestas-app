@@ -227,13 +227,27 @@ export function SurveyBuilder() {
                             <h3 className="text-sm font-semibold mb-3 text-muted-foreground uppercase tracking-wide">Personalización Visual</h3>
                             <div className="grid md:grid-cols-2 gap-4">
                                 <div className="grid gap-2">
-                                    <Label htmlFor="bg-color">Color de Fondo</Label>
+                                    <Label htmlFor="bg-color">Fondo de la Página</Label>
                                     <div className="flex gap-2">
+                                        <div className="relative flex-1">
+                                            <Input
+                                                id="bg-color"
+                                                placeholder="Ej. #ffffff o linear-gradient(...)"
+                                                value={survey.theme?.backgroundColor || ""}
+                                                onChange={(e) => setSurvey({
+                                                    ...survey,
+                                                    theme: {
+                                                        ...(survey.theme || {}),
+                                                        backgroundColor: e.target.value
+                                                    }
+                                                })}
+                                                className="font-mono text-xs"
+                                            />
+                                        </div>
                                         <Input
-                                            id="bg-color"
                                             type="color"
-                                            className="w-12 h-10 p-1 cursor-pointer"
-                                            value={survey.theme?.backgroundColor || "#ffffff"}
+                                            className="w-12 h-10 p-1 cursor-pointer shrink-0"
+                                            value={survey.theme?.backgroundColor?.startsWith('#') ? survey.theme.backgroundColor : "#ffffff"}
                                             onChange={(e) => setSurvey({
                                                 ...survey,
                                                 theme: {
@@ -242,27 +256,49 @@ export function SurveyBuilder() {
                                                 }
                                             })}
                                         />
+                                    </div>
+                                    <p className="text-xs text-muted-foreground">
+                                        Puedes usar un color (#hex) o código CSS. Para degradados visita: <a href="https://cssgradient.io/" target="_blank" rel="noreferrer" className="text-primary hover:underline">cssgradient.io</a>
+                                    </p>
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="section-bg-color">Fondo de Títulos/Secciones</Label>
+                                    <div className="flex gap-2">
                                         <Input
-                                            placeholder="#FFFFFF"
-                                            value={survey.theme?.backgroundColor || ""}
+                                            type="color"
+                                            className="w-12 h-10 p-1 cursor-pointer shrink-0"
+                                            value={survey.theme?.sectionBackground || "#822A88"}
                                             onChange={(e) => setSurvey({
                                                 ...survey,
                                                 theme: {
                                                     ...(survey.theme || {}),
-                                                    backgroundColor: e.target.value
+                                                    backgroundColor: survey.theme?.backgroundColor || "#ffffff",
+                                                    sectionBackground: e.target.value
                                                 }
                                             })}
-                                            className="flex-1"
+                                        />
+                                        <Input
+                                            placeholder="#822A88"
+                                            value={survey.theme?.sectionBackground || ""}
+                                            onChange={(e) => setSurvey({
+                                                ...survey,
+                                                theme: {
+                                                    ...(survey.theme || {}),
+                                                    backgroundColor: survey.theme?.backgroundColor || "#ffffff",
+                                                    sectionBackground: e.target.value
+                                                }
+                                            })}
+                                            className="flex-1 font-mono"
                                         />
                                     </div>
                                 </div>
+
                                 <div className="grid gap-2">
                                     <Label htmlFor="active-color">Color de Énfasis (Estrellas/Escalas)</Label>
                                     <div className="flex gap-2">
                                         <Input
-                                            id="active-color"
                                             type="color"
-                                            className="w-12 h-10 p-1 cursor-pointer"
+                                            className="w-12 h-10 p-1 cursor-pointer shrink-0"
                                             value={survey.theme?.activeColor || "#822A88"}
                                             onChange={(e) => setSurvey({
                                                 ...survey,
@@ -284,7 +320,7 @@ export function SurveyBuilder() {
                                                     activeColor: e.target.value
                                                 }
                                             })}
-                                            className="flex-1"
+                                            className="flex-1 font-mono"
                                         />
                                     </div>
                                 </div>

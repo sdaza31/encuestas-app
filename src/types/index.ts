@@ -48,6 +48,7 @@ export interface ThemeConfig {
     sectionTitleStyle?: TextStyle;
     answerStyle?: TextStyle;
     activeColor?: string;
+    sectionBackground?: string;
 }
 
 export interface SavedTheme {

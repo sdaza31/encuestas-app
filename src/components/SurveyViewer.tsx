@@ -181,7 +181,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                         <div
                                             className="py-3 px-6 rounded-t-xl text-center mb-0 shadow-sm relative z-10"
                                             style={{
-                                                backgroundColor: survey.theme?.activeColor || '#822A88',
+                                                background: survey.theme?.sectionBackground || survey.theme?.activeColor || '#822A88',
                                                 color: '#ffffff'
                                             }}
                                         >
