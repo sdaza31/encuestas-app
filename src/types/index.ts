@@ -45,6 +45,7 @@ export interface ThemeConfig {
     titleStyle?: TextStyle;
     descriptionStyle?: TextStyle;
     questionTitleStyle?: TextStyle;
+    sectionTitleStyle?: TextStyle;
     answerStyle?: TextStyle;
     activeColor?: string;
 }

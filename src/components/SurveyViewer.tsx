@@ -187,7 +187,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                         >
                                             <h2
                                                 className="text-xl font-bold uppercase tracking-wide"
-                                                style={getTextStyle(survey.theme?.questionTitleStyle)}
+                                                style={getTextStyle(survey.theme?.sectionTitleStyle)}
                                             >
                                                 {group.title}
                                             </h2>

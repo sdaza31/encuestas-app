@@ -363,7 +363,7 @@ export function SurveyBuilder() {
 
                         <div className="border-t pt-4 mt-2">
                             <Label className="block mb-4 text-sm font-semibold text-muted-foreground uppercase tracking-wide">Tipografía y Estilos</Label>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 <StyleEditor
                                     label="Título Encuesta"
                                     value={survey.theme?.titleStyle}
@@ -373,6 +373,11 @@ export function SurveyBuilder() {
                                     label="Descripción"
                                     value={survey.theme?.descriptionStyle}
                                     onChange={(s) => setSurvey(prev => ({ ...prev, theme: { ...prev.theme, descriptionStyle: s, backgroundColor: prev.theme?.backgroundColor || "#ffffff" } }))}
+                                />
+                                <StyleEditor
+                                    label="Título de Sección"
+                                    value={survey.theme?.sectionTitleStyle}
+                                    onChange={(s) => setSurvey(prev => ({ ...prev, theme: { ...prev.theme, sectionTitleStyle: s, backgroundColor: prev.theme?.backgroundColor || "#ffffff" } }))}
                                 />
                                 <StyleEditor
                                     label="Títulos Preguntas"
