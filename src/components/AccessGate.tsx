@@ -8,7 +8,7 @@ import ccmLogo from "@/assets/ccm-tec-logo.png"
 
 interface AccessGateProps {
     allowedEmails?: string[];
-    onAccessGranted: () => void;
+    onAccessGranted: (email: string) => void;
     surveyTitle?: string;
 }
 
@@ -31,7 +31,7 @@ export function AccessGate({ allowedEmails, onAccessGranted, surveyTitle }: Acce
         const isAllowed = allowedEmails?.some(e => e.trim().toLowerCase() === normalizedEmail);
 
         if (isAllowed) {
-            onAccessGranted();
+            onAccessGranted(normalizedEmail);
         } else {
             setError("⛔ Acceso denegado: Este correo no está autorizado para responder esta encuesta.");
         }

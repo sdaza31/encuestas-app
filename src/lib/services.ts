@@ -9,7 +9,9 @@ import {
     query,
     orderBy,
     Timestamp,
-    setDoc
+    setDoc,
+    where,
+    limit
 } from "firebase/firestore";
 import { Survey } from "@/types";
 
@@ -103,13 +105,14 @@ export const getSurvey = async (id: string): Promise<Survey | null> => {
     }
 };
 
-export const submitResponse = async (surveyId: string, answers: Record<string, unknown>) => {
+export const submitResponse = async (surveyId: string, answers: Record<string, unknown>, respondentEmail?: string) => {
     try {
         const surveyRef = doc(db, COLLECTION_SURVEYS, surveyId);
         // Save to a subcollection 'responses'
         await addDoc(collection(surveyRef, "responses"), {
             answers,
-            submittedAt: Timestamp.now()
+            submittedAt: Timestamp.now(),
+            respondentEmail: respondentEmail || null
         });
     } catch (e) {
         console.error("Error submitting response: ", e);
@@ -125,6 +128,22 @@ export const getSurveyResponses = async (surveyId: string) => {
     } catch (e) {
         console.error("Error getting responses: ", e);
         throw e;
+    }
+};
+
+export const checkSurveyResponseByEmail = async (surveyId: string, email: string): Promise<boolean> => {
+    try {
+        const surveyRef = doc(db, COLLECTION_SURVEYS, surveyId);
+        const q = query(
+            collection(surveyRef, "responses"),
+            where("respondentEmail", "==", email),
+            limit(1)
+        );
+        const querySnapshot = await getDocs(q);
+        return !querySnapshot.empty;
+    } catch (e) {
+        console.error("Error checking response by email: ", e);
+        return false;
     }
 };
 

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select } from "@/components/ui/select"
 import { StarRating, NumericScale } from "@/components/ui/rating"
-import { submitResponse } from "@/lib/services"
+import { submitResponse, checkSurveyResponseByEmail } from "@/lib/services"
 import { AccessGate } from "@/components/AccessGate"
 
 interface SurveyViewerProps {
@@ -35,6 +35,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
 
     const [alreadyResponded, setAlreadyResponded] = React.useState(false);
     const [hasAccess, setHasAccess] = React.useState(false);
+    const [respondentEmail, setRespondentEmail] = React.useState<string | undefined>(undefined);
 
     React.useEffect(() => {
         // If public or preview, grant access immediately
@@ -56,7 +57,19 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
         return (
             <AccessGate
                 allowedEmails={survey.allowedEmails}
-                onAccessGranted={() => setHasAccess(true)}
+                onAccessGranted={async (email) => {
+                    setRespondentEmail(email);
+                    if (survey.limitOneResponse) {
+                        const hasResponded = await checkSurveyResponseByEmail(survey.id, email);
+                        if (hasResponded) {
+                            setAlreadyResponded(true);
+                        } else {
+                            setHasAccess(true);
+                        }
+                    } else {
+                        setHasAccess(true);
+                    }
+                }}
                 surveyTitle={survey.title}
             />
         );
@@ -77,7 +90,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
 
         setSubmitting(true);
         try {
-            await submitResponse(survey.id, answers);
+            await submitResponse(survey.id, answers, respondentEmail);
             setSubmitted(true);
             if (survey.limitOneResponse) {
                 localStorage.setItem(`survey_responded_${survey.id}`, 'true');
