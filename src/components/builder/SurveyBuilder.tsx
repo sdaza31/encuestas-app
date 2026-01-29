@@ -61,6 +61,19 @@ export function SurveyBuilder() {
         }))
     }
 
+    const moveQuestion = (index: number, direction: 'up' | 'down') => {
+        const newQuestions = [...survey.questions]
+        if (direction === 'up' && index > 0) {
+            [newQuestions[index - 1], newQuestions[index]] = [newQuestions[index], newQuestions[index - 1]]
+        } else if (direction === 'down' && index < newQuestions.length - 1) {
+            [newQuestions[index], newQuestions[index + 1]] = [newQuestions[index + 1], newQuestions[index]]
+        }
+        setSurvey(prev => ({
+            ...prev,
+            questions: newQuestions
+        }))
+    }
+
     const [lastSave, setLastSave] = React.useState(0)
 
     const handleShare = () => {
@@ -495,12 +508,14 @@ export function SurveyBuilder() {
                     </div>
 
                     <div className="space-y-6">
-                        {survey.questions.map((q) => (
+                        {survey.questions.map((q, index) => (
                             <QuestionEditor
                                 key={q.id}
                                 question={q}
                                 onUpdate={updateQuestion}
                                 onDelete={() => deleteQuestion(q.id)}
+                                onMoveUp={index > 0 ? () => moveQuestion(index, 'up') : undefined}
+                                onMoveDown={index < survey.questions.length - 1 ? () => moveQuestion(index, 'down') : undefined}
                             />
                         ))}
                     </div>

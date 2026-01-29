@@ -5,15 +5,17 @@ import { Label } from "@/components/ui/label"
 import { Select } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Trash2, Plus, X } from "lucide-react"
+import { Trash2, Plus, X, ArrowUp, ArrowDown } from "lucide-react"
 
 interface QuestionEditorProps {
     question: Question
     onUpdate: (updatedQuestion: Question) => void
     onDelete: () => void
+    onMoveUp?: () => void
+    onMoveDown?: () => void
 }
 
-export function QuestionEditor({ question, onUpdate, onDelete }: QuestionEditorProps) {
+export function QuestionEditor({ question, onUpdate, onDelete, onMoveUp, onMoveDown }: QuestionEditorProps) {
     const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const newType = e.target.value as QuestionType
         onUpdate({
@@ -57,9 +59,33 @@ export function QuestionEditor({ question, onUpdate, onDelete }: QuestionEditorP
     return (
         <Card className="w-full relative group">
             <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Button variant="ghost" size="icon" onClick={onDelete} className="text-destructive hover:text-destructive">
-                    <Trash2 className="h-4 w-4" />
-                </Button>
+                <div className="flex bg-background/50 backdrop-blur-sm rounded-md border shadow-sm">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={onMoveUp}
+                        disabled={!onMoveUp}
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground disabled:opacity-30"
+                        title="Subir"
+                    >
+                        <ArrowUp className="h-4 w-4" />
+                    </Button>
+                    <div className="w-px bg-border my-1" />
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={onMoveDown}
+                        disabled={!onMoveDown}
+                        className="h-8 w-8 text-muted-foreground hover:text-foreground disabled:opacity-30"
+                        title="Bajar"
+                    >
+                        <ArrowDown className="h-4 w-4" />
+                    </Button>
+                    <div className="w-px bg-border my-1" />
+                    <Button variant="ghost" size="icon" onClick={onDelete} className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10">
+                        <Trash2 className="h-4 w-4" />
+                    </Button>
+                </div>
             </div>
             <CardHeader>
                 <CardTitle className="text-lg">Editar Pregunta</CardTitle>
