@@ -370,7 +370,10 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                         <div className="bg-card p-4 rounded-xl shadow-sm border text-center">
                             <div
                                 className="text-muted-foreground whitespace-pre-line"
-                                style={getTextStyle(survey.theme?.descriptionStyle)}
+                                style={{
+                                    ...getTextStyle(survey.theme?.descriptionStyle),
+                                    textAlign: undefined
+                                }}
                                 dangerouslySetInnerHTML={{ __html: survey.footerMessage }}
                             />
                         </div>
