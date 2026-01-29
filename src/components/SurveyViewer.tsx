@@ -4,6 +4,7 @@ import * as React from "react"
 import { Survey, TextStyle } from "@/types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Select } from "@/components/ui/select"
 import { StarRating, NumericScale } from "@/components/ui/rating"
@@ -261,6 +262,20 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                                                         handleAnswerChange(q.id, val);
                                                                     }}
                                                                     className="bg-background/50 h-11"
+                                                                />
+                                                            )}
+
+                                                            {q.type === 'long-text' && (
+                                                                <Textarea
+                                                                    placeholder="Escribe tu respuesta aquí..."
+                                                                    value={answers[q.id] || ''}
+                                                                    onChange={(e) => {
+                                                                        let val = e.target.value;
+                                                                        const maxLen = q.validation?.maxLength;
+                                                                        if (maxLen && val.length > maxLen) val = val.slice(0, maxLen);
+                                                                        handleAnswerChange(q.id, val);
+                                                                    }}
+                                                                    className="bg-background/50 min-h-[100px]"
                                                                 />
                                                             )}
 

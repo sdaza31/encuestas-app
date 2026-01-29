@@ -112,7 +112,8 @@ export function QuestionEditor({ question, onUpdate, onDelete, onMoveUp, onMoveD
                             value={question.type}
                             onChange={handleTypeChange}
                         >
-                            <option value="text">Texto Libre</option>
+                            <option value="text">Texto Libre (Corto)</option>
+                            <option value="long-text">Texto Largo (Párrafo)</option>
                             <option value="radio">Opción Única (Radio)</option>
                             <option value="checkbox">Casillas de Verificación (Checkbox)</option>
                             <option value="select">Lista Desplegable (Select)</option>
@@ -139,7 +140,7 @@ export function QuestionEditor({ question, onUpdate, onDelete, onMoveUp, onMoveD
                 </div>
 
                 {/* Validation Editor for Text Questions */}
-                {question.type === 'text' && (
+                {(question.type === 'text' || question.type === 'long-text') && (
                     <div className="grid grid-cols-2 gap-4 mt-4 p-4 bg-muted/30 rounded-lg border border-dashed">
                         <div className="grid gap-2">
                             <Label htmlFor={`q-validation-type-${question.id}`}>Tipo de entrada</Label>

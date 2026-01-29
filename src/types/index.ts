@@ -1,4 +1,4 @@
-export type QuestionType = 'radio' | 'checkbox' | 'text' | 'select' | 'date' | 'rating-stars' | 'rating-scale' | 'section';
+export type QuestionType = 'radio' | 'checkbox' | 'text' | 'long-text' | 'select' | 'date' | 'rating-stars' | 'rating-scale' | 'section';
 
 export interface Option {
     id: string;
