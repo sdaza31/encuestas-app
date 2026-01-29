@@ -361,7 +361,7 @@ export function SurveyViewer({ survey, isPreview = false, onBack }: SurveyViewer
                                                                 <div className="py-4 bg-muted/10 rounded-lg mt-2 px-2">
                                                                     <NumericScale
                                                                         max={10}
-                                                                        labels={{ min: 'Muy insatisfecho', max: 'Muy satisfecho' }}
+                                                                        nps={true}
                                                                         value={(answers[q.id] as number) || 0}
                                                                         onChange={(val) => handleAnswerChange(q.id, val)}
                                                                         activeColor={survey.theme?.activeColor}

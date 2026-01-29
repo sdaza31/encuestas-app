@@ -117,21 +117,32 @@ export function StarRating({ value = 0, onChange, max = 5, labels, activeColor, 
     )
 }
 
-export function NumericScale({ value, onChange, max = 10, labels, activeColor }: RatingProps) {
+export function NumericScale({ value, onChange, max = 10, labels, activeColor, nps }: RatingProps & { nps?: boolean }) {
     const [hoverValue, setHoverValue] = React.useState<number | null>(null)
 
     // Corporate colors gradient: Light Lilac -> Corporate Purple (Lighter by default)
     // #E6CEF2 (Very light purple) -> #A970AF (Light purple)
     const gradientBackground = `linear-gradient(to right, #E6CEF2, #CDA4D4, #A970AF)`;
 
+    // Removed color definitions as requested - using neutral text
+
     return (
-        <div className="space-y-2 w-full">
-            {labels && (
-                <div className="flex justify-between text-sm text-muted-foreground w-full">
-                    <span>{labels.min}</span>
-                    <span>{labels.max}</span>
+        <div className="space-y-3 w-full">
+            {nps ? (
+                <div className="flex w-full text-xs sm:text-sm font-medium text-muted-foreground pb-1">
+                    <div className="flex-1 text-center border-b-2 border-muted pb-1 mx-1" style={{ flexGrow: 6 }}>Detractor</div>
+                    <div className="flex-1 text-center border-b-2 border-muted pb-1 mx-1" style={{ flexGrow: 2 }}>Neutral</div>
+                    <div className="flex-1 text-center border-b-2 border-muted pb-1 mx-1" style={{ flexGrow: 2 }}>Promotor</div>
                 </div>
+            ) : (
+                labels && (
+                    <div className="flex justify-between text-sm text-muted-foreground w-full">
+                        <span>{labels.min}</span>
+                        <span>{labels.max}</span>
+                    </div>
+                )
             )}
+
             <div
                 className="flex w-full rounded-md overflow-hidden border bg-background relative"
                 style={{ background: gradientBackground }}
@@ -141,8 +152,8 @@ export function NumericScale({ value, onChange, max = 10, labels, activeColor }:
                     const isSelected = value === ratingValue
                     const isHovered = hoverValue === ratingValue
 
-                    // On select/hover, use the strong corporate purple (#822A88)
-                    const activeColor = '#822A88';
+                    // Always use corporate color or provided activeColor
+                    const buttonActiveColor = activeColor || '#822A88';
 
                     return (
                         <button
@@ -156,7 +167,7 @@ export function NumericScale({ value, onChange, max = 10, labels, activeColor }:
                                 isSelected ? "font-bold scale-110 shadow-lg z-20 ring-2 ring-white" : "text-black/60 hover:text-white hover:bg-white/10"
                             )}
                             style={{
-                                backgroundColor: isSelected || isHovered ? activeColor : 'transparent',
+                                backgroundColor: isSelected || isHovered ? buttonActiveColor : 'transparent',
                                 color: isSelected || isHovered ? 'white' : undefined,
                                 textShadow: isSelected || isHovered ? '0 1px 2px rgba(0,0,0,0.3)' : 'none'
                             }}
