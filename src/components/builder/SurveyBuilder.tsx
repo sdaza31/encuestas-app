@@ -16,6 +16,7 @@ import { SurveyViewer } from "@/components/SurveyViewer"
 import { SurveyList } from "@/components/admin/SurveyList"
 
 import { ShareModal } from "./ShareModal"
+import { ImportQuestionsModal } from "./ImportQuestionsModal"
 import { RichTextEditor } from "@/components/ui/RichTextEditor"
 
 export function SurveyBuilder() {
@@ -504,9 +505,19 @@ export function SurveyBuilder() {
                         ))}
                     </div>
 
-                    <Button onClick={addQuestion} className="w-full py-8 border-dashed border-2 bg-transparent text-muted-foreground hover:bg-muted hover:text-foreground" variant="outline">
-                        <Plus className="mr-2 h-5 w-5" /> Añadir Pregunta
-                    </Button>
+                    <div className="grid grid-cols-2 gap-4">
+                        <Button onClick={addQuestion} className="w-full py-8 border-dashed border-2 bg-transparent text-muted-foreground hover:bg-muted hover:text-foreground" variant="outline">
+                            <Plus className="mr-2 h-5 w-5" /> Añadir Pregunta
+                        </Button>
+                        <ImportQuestionsModal
+                            onImport={(newQuestions) => {
+                                setSurvey(prev => ({
+                                    ...prev,
+                                    questions: [...prev.questions, ...newQuestions]
+                                }));
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
